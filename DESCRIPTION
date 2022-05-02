@@ -1,0 +1,38 @@
+Package: gpxhelpers
+Title: Functions to help me map my GPX files in R
+Version: 0.0.0.9000
+Date: 2022-5-1
+Description: Functions to help me map my GPX files in R.
+    These functions may not work for others.
+Authors@R: person("Derek","Ogle",
+    email="derek@derekogle.com",
+    role=c("aut","cre"),
+    comment=c(ORCID="0000-0002-0370-9299"))
+URL: https://github.com/droglenc/gpxhelpers
+BugReports: https://github.com/droglenc/gpxhelpers/issues
+License: GPL (>= 3)
+LazyData: true
+Depends:
+    R (>= 4.0.0)
+Imports:
+    graphics,
+    grDevices,
+    utils,
+    grid,
+    dplyr,
+    ggplot2,
+    hms,
+    lubridate,
+    magrittr,
+    rlang,
+    geosphere,
+    ggrepel,
+    gpx,
+    kableExtra,
+    knitr,
+    OpenStreetMap
+Suggests:
+    rmarkdown,
+    testthat
+Encoding: UTF-8
+RoxygenNote: 7.1.2

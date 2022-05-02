@@ -1,0 +1,13 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+LICENSE
+README.md
+NEWS.md
+
+## Raw data files
+^data-raw$
+
+^\.github$
+^codecov\.yml$
+
+^tests/manual_tests/
