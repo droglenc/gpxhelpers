@@ -19,16 +19,14 @@
 #' @export 
 walkSummary <- function(walkdata) {
   walksum <- iWalkSumPts(walkdata) %>%
-    dplyr::select(.data$trknum:.data$Ownership,
-                  .data$Distance,.data$DeltaElev,-.data$Primary) %>%
-    dplyr::rename(NUM=.data$trknum,Owner=.data$Ownership)
+    dplyr::rename(NUM=.data$trknum,Owner=.data$Ownership,
+                  CumDist=.data$end_Dist) %>%
+    dplyr::mutate(Description=paste(.data$From,"to",.data$To)) %>%
+    dplyr::select(.data$NUM,.data$trackID,.data$Primary,
+                  .data$Description,.data$Type,.data$Owner,
+                  .data$Distance,.data$CumDist,.data$DeltaElev)
   
-  knitr::kable(walksum,digits=c(0,NA,NA,NA,NA,2,1)) %>%
+  knitr::kable(walksum,digits=c(0,NA,NA,NA,NA,NA,2,2,0)) %>%
     kableExtra::kable_classic(html_font="Cambria",full_width=FALSE) %>%
-    kableExtra::kable_styling(bootstrap_options=c("hover","condensed")) %>%
-    kableExtra::footnote(general=paste("Total distance of this walk is",
-                                       formatC(max(walkdata$Distance),format="f",digits=2),
-                                       "miles."))
+    kableExtra::kable_styling(bootstrap_options=c("hover","condensed"))
 }
-
-

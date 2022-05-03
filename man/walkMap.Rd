@@ -2,21 +2,35 @@
 % Please edit documentation in R/walkMap.R
 \name{walkMap}
 \alias{walkMap}
-\alias{walkElevation}
+\alias{allTracksMap}
 \title{Visualize tracks that form a walk.}
 \usage{
 walkMap(
-  walkdata,
+  dat,
   title = NULL,
   label_tracks = TRUE,
   OMap_type = c("esri-topo", "esri", "apple-iphoto", "bing", "stamen-terrain", "none"),
-  OMap_bufr = 2e-05
+  OMap_bufr = 2e-05,
+  LAT_bottom = NULL,
+  LAT_top = NULL,
+  LON_left = NULL,
+  LON_right = NULL
 )
 
-walkElevation(walkdata, title = NULL, elev_bufr = 0.01)
+allTracksMap(
+  dat,
+  title = NULL,
+  label_tracks = TRUE,
+  OMap_type = c("esri-topo", "esri", "apple-iphoto", "bing", "stamen-terrain", "none"),
+  OMap_bufr = 4e-05,
+  LAT_bottom = NULL,
+  LAT_top = NULL,
+  LON_left = NULL,
+  LON_right = NULL
+)
 }
 \arguments{
-\item{walkdata}{A data frame that contains tracks that form a contiguous \dQuote{walk}. Usually made with \code{\link{walkMaker}}.}
+\item{dat}{A data frame that contains tracks to map, contiguous tracks for \code{walkMap} that are usually made with \code{\link{walkMaker}} and all tracks for \code{allTracksMap}.}
 
 \item{title}{A string for the map title.}
 
@@ -26,7 +40,13 @@ walkElevation(walkdata, title = NULL, elev_bufr = 0.01)
 
 \item{OMap_bufr}{A numeric that makes the OpenStreet map slightly larger than the space that the track paths require.}
 
-\item{elev_bufr}{A numeric that makes a slight buffer around the elevation data.}
+\item{LAT_bottom}{A latitude coordinate for the bottom of the bounding box for the map. Defaults to just below the minimum latitude found in \code{trkdata}.}
+
+\item{LAT_top}{A latitude coordinate for the top of the bounding box for the map. Defaults to just above the maximum latitude found in \code{trkdata}.}
+
+\item{LON_left}{A longitude coordinate for the left-side of the bounding box for the map. Defaults to just left of the minimum latitude found in \code{trkdata}.}
+
+\item{LON_right}{A longitude coordinate for the right-side of the bounding box for the map. Defaults to just right the maximum latitude found in \code{trkdata}.}
 }
 \value{
 Returns a \code{ggplot2} object that is the map. The map will be displayed if the returned object is not assigned to name.
