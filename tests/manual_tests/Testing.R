@@ -39,6 +39,7 @@ walkMap(awalk)
 walkSummary(awalk)
 
 ### A more complicated one
+
 walkIDs <- c("SPDR01","CTYH03","GPIT01","GPIT02","CTYH12","CTYH13","RUTH01")
 awalk <- walkMaker(dat,info,walkIDs)
 walkMap(awalk)

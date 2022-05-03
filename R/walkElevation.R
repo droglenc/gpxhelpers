@@ -5,6 +5,7 @@
 #' @param walkdata A data frame that contains tracks that form a contiguous \dQuote{walk}. Usually made with \code{\link{walkMaker}}.
 #' @param title A string for the map title.
 #' @param elev_bufr A numeric that makes a slight buffer around the elevation data.
+#' @param maval The number of points to include in the moving average. Use 1 to maintain raw data. Defaults to 10.
 #' 
 #' @details NONE YET
 #' 
@@ -19,7 +20,9 @@
 #' ## None yet.
 #' 
 #' @export
-walkElevation <- function(walkdata,title=NULL,elev_bufr=0.01) {
+walkElevation <- function(walkdata,title=NULL,elev_bufr=0.01,maval=10) {
+  ## Add a moving average
+  walkdata$maElevation <- stats::filter(walkdata$Elevation,rep(1/maval,maval))
   ## Get starting distances and elevations (for putting points on the plot)
   walksum <- iWalkSumPts(walkdata)
   ## Find min and max elevations to set buffer around the plot
@@ -28,13 +31,14 @@ walkElevation <- function(walkdata,title=NULL,elev_bufr=0.01) {
   ## Make the plot
   elev <- ggplot() +
     geom_ribbon(data=walkdata,
-                mapping=aes(x=.data$Distance,ymin=min_elev,ymax=.data$Elevation),
+                mapping=aes(x=.data$Distance,ymin=min_elev,ymax=.data$maElevation),
                 fill="gray80") +
     geom_line(data=walkdata,
-              mapping=aes(x=.data$Distance,y=.data$Elevation)) +
-    geom_point(data=walksum,
-               mapping=aes(x=.data$start_Dist,y=.data$start_Elev),
-               pch=19,color="red") +
+              mapping=aes(x=.data$Distance,y=.data$maElevation)) +
+    geom_label(data=walksum,
+               mapping=aes(x=.data$start_Dist,y=.data$start_Elev,
+                           label=.data$trknum),
+               nudge_y=5) +
     scale_x_continuous(name="Distance (miles)",expand=expansion(mult=0.01)) +
     scale_y_continuous(name="Elevation (ft)",limits=c(min_elev,max_elev),
                        expand=expansion(mult=0)) +

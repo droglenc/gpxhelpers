@@ -4,7 +4,7 @@
 \alias{walkElevation}
 \title{Visualize elevations for tracks that form a walk.}
 \usage{
-walkElevation(walkdata, title = NULL, elev_bufr = 0.01)
+walkElevation(walkdata, title = NULL, elev_bufr = 0.01, maval = 10)
 }
 \arguments{
 \item{walkdata}{A data frame that contains tracks that form a contiguous \dQuote{walk}. Usually made with \code{\link{walkMaker}}.}
@@ -12,6 +12,8 @@ walkElevation(walkdata, title = NULL, elev_bufr = 0.01)
 \item{title}{A string for the map title.}
 
 \item{elev_bufr}{A numeric that makes a slight buffer around the elevation data.}
+
+\item{maval}{The number of points to include in the moving average. Use 1 to maintain raw data. Defaults to 10.}
 }
 \value{
 Returns a \code{ggplot2} object. The object will be displayed if the returned object is not assigned to name.

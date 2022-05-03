@@ -11,7 +11,7 @@ szs <- c("Highway"=1.5,"Paved"=1.25,"Gravel"=1.25,"Trail"=1)
 #' @importFrom rlang .data
 
 ## Used to fix "no visible binding" issue for common ggplot2 functions
-#' @importFrom ggplot2 ggplot aes geom_path geom_point geom_line geom_ribbon  scale_color_manual scale_linetype_manual scale_size_manual scale_y_continuous scale_x_continuous expansion coord_sf labs theme_minimal theme element_blank
+#' @importFrom ggplot2 ggplot aes geom_path geom_point geom_line geom_ribbon geom_label scale_color_manual scale_linetype_manual scale_size_manual scale_y_continuous scale_x_continuous expansion coord_sf labs theme_minimal theme element_blank
 
 #' @importFrom magrittr %>%
 #' @export
