@@ -11,3 +11,4 @@ NEWS.md
 ^codecov\.yml$
 
 ^tests/manual_tests/
+^inst/templates/

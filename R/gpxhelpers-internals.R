@@ -4,7 +4,7 @@
 #'
 #' @rdname gpxhelpers-internals
 #' @keywords internal
-#' @aliases iWalkSumPts
+#' @aliases iWalkSumPts iBearing
 
 iWalkSumPts <- function(walkdat) {
   ## Find the starting points for each track
@@ -22,17 +22,58 @@ iWalkSumPts <- function(walkdat) {
                   end_Dist=.data$Distance,end_Elev=.data$Elevation) %>%
     dplyr::ungroup() %>%
     dplyr::select(.data$trknum,.data$trackID,dplyr::starts_with("end"))
-  ## Combine starting and ending points ...
+  ## Find a midpoint for each track
+  mpwalk <- walkdat %>%
+    dplyr::group_by(.data$trknum,.data$trackID) %>%
+    dplyr::slice(n=floor(length(.data$Longitude)/2)) %>%
+    dplyr::rename(midpt_Lat=.data$Latitude,midpt_Lon=.data$Longitude) %>%
+    dplyr::ungroup() %>%
+    dplyr::select(.data$trknum,.data$trackID,dplyr::starts_with("midpt"))
+  ## Find bearing near midpoint
+  mpbear <- walkdat %>%
+    dplyr::group_by(.data$trknum,.data$trackID) %>%
+    dplyr::summarize(midpt_Bearing=iBearing(.data$Longitude,.data$Latitude)) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(duped=duplicated(.data$trackID),
+                  hjust=dplyr::case_when(
+                    .data$midpt_Bearing %in% c("North","South") & !.data$duped ~ -0.5,
+                    .data$midpt_Bearing %in% c("North","South") & .data$duped ~ 1.5,
+                    TRUE ~ 0.5),
+                  vjust=dplyr::case_when(
+                    .data$midpt_Bearing %in% c("East","West") & !.data$duped ~ 1.5,
+                    .data$midpt_Bearing %in% c("East","West") & .data$duped ~ -0.5,
+                    TRUE ~ 0.5)
+    ) %>%
+    dplyr::select(-.data$duped)
+  mpwalk <- dplyr::left_join(mpwalk,mpbear,by="trknum") %>%
+    dplyr::rename(trackID=.data$trackID.x) %>%
+    dplyr::select(-.data$trackID.y)
+  ## Combine starting, ending, and mid points ...
   ## ... and calculate distance, elevation change, and midpoint of each track
   sumwalk <- dplyr::left_join(hdwalk,tlwalk,by="trknum") %>%
     dplyr::rename(trackID=.data$trackID.x) %>%
-    dplyr::select(-.data$trackID.y) %>%        
+    dplyr::select(-.data$trackID.y) %>%
     dplyr::mutate(Distance=.data$end_Dist-.data$start_Dist,
-                  DeltaElev=.data$end_Elev-.data$start_Elev,
-                  midpt_Lat=geosphere::midPoint(p1=c(.data$start_Lon,.data$start_Lat),
-                                                p2=c(.data$end_Lon,.data$end_Lat))[[1,"lat"]],
-                  midpt_Lon=geosphere::midPoint(p1=c(.data$start_Lon,.data$start_Lat),
-                                                p2=c(.data$end_Lon,.data$end_Lat))[[1,"lon"]])
+                  DeltaElev=.data$end_Elev-.data$start_Elev) %>%
+    dplyr::left_join(mpwalk,by="trknum") %>%
+    dplyr::rename(trackID=.data$trackID.x) %>%
+    dplyr::select(-.data$trackID.y)
   ## Return
   sumwalk
+}
+
+
+iBearing <- function(Lon,Lat,buf=5) {
+  mp <- floor(length(Lon)/2)
+  if (mp<=buf) buf <- floor(mp/2)
+  res <- (geosphere::bearing(c(Lon[mp-buf],Lat[mp-buf]),
+                             c(Lon[mp+buf],Lat[mp+buf])) + 360) %% 360
+  res <- res[!is.na(res)]
+  dplyr::case_when(
+    res<45 ~ "South",
+    res<135 ~ "East",
+    res<225 ~ "North",
+    res<315 ~ "West",
+    TRUE ~ "South"
+  )
 }

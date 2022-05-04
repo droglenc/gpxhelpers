@@ -4,13 +4,14 @@
 #' 
 #' @param dat A data frame that contains tracks to map, contiguous tracks for \code{walkMap} that are usually made with \code{\link{walkMaker}} and all tracks for \code{allTracksMap}.
 #' @param title A string for the map title.
-#' @param label_tracks A logical for whether (or not) the tracks should be labeled with a unique number.
+#' @param label_tracks A logical for whether (or not) the tracks should be labeled with a unique number in \code{walkMap} or the track ID in \code{allTracksMap}.
 #' @param OMap_type A string for the type of OpenStreet map to use under the track paths. Use \code{"none"} to not using an OpenStreet map.
 #' @param OMap_bufr A numeric that makes the OpenStreet map slightly larger than the space that the track paths require.
 #' @param LAT_bottom A latitude coordinate for the bottom of the bounding box for the map. Defaults to just below the minimum latitude found in \code{trkdata}.
 #' @param LAT_top A latitude coordinate for the top of the bounding box for the map. Defaults to just above the maximum latitude found in \code{trkdata}.
 #' @param LON_left A longitude coordinate for the left-side of the bounding box for the map. Defaults to just left of the minimum latitude found in \code{trkdata}.
 #' @param LON_right A longitude coordinate for the right-side of the bounding box for the map. Defaults to just right the maximum latitude found in \code{trkdata}.
+#' @param walk A ggplot2 object made with \code{walkMap} that will be used to highlight the \dQuote{walk} on the map of all tracks.
 #' 
 #' @details NONE YET
 #' 
@@ -29,7 +30,7 @@
 walkMap <- function(dat,title=NULL,label_tracks=TRUE,
                     OMap_type=c("esri-topo","esri","apple-iphoto","bing",
                                 "stamen-terrain","none"),
-                    OMap_bufr=0.00002,
+                    OMap_bufr=0.00004,
                     LAT_bottom=NULL,LAT_top=NULL,
                     LON_left=NULL,LON_right=NULL) {
   ## Handle default arguments
@@ -55,12 +56,12 @@ walkMap <- function(dat,title=NULL,label_tracks=TRUE,
   ## Add labels if asked for
   if (label_tracks) {
     mapz <- mapz +
-      ggrepel::geom_label_repel(data=walksum,
-                                mapping=aes(x=.data$midpt_Lon,
-                                            y=.data$midpt_Lat,
-                                            label=.data$trknum,
-                                            color=.data$trknum),
-                                label.padding=grid::unit(0.1,"lines"))
+      geom_label(data=walksum,
+                 mapping=aes(x=.data$midpt_Lon,y=.data$midpt_Lat,
+                             label=.data$trknum,color=.data$trknum,
+                             hjust=.data$hjust,
+                             vjust=.data$vjust),
+                 label.padding=grid::unit(0.1,"lines"))
   }
   ## Add title if one is given
   if (!is.null(title)) mapz <- mapz + labs(title=title)
@@ -74,24 +75,35 @@ walkMap <- function(dat,title=NULL,label_tracks=TRUE,
 
 #' @rdname walkMap
 #' @export
-allTracksMap <- function(dat,title=NULL,label_tracks=TRUE,
+allTracksMap <- function(dat,title=NULL,label_tracks=FALSE,
                          OMap_type=c("esri-topo","esri","apple-iphoto","bing",
                                      "stamen-terrain","none"),
                          OMap_bufr=0.00004,
                          LAT_bottom=NULL,LAT_top=NULL,
-                         LON_left=NULL,LON_right=NULL) {
+                         LON_left=NULL,LON_right=NULL,
+                         walk=NULL) {
   ## Handle default arguments
   OMap_type <- match.arg(OMap_type)
   ## Possibly make underlyling OpenStreet map
   if (OMap_type!="none")
-    omap <- iOMAP(dat,OMap_type,OMap_bufr,LAT_bottom,LAT_top,LON_left,LON_right)
-  else omap <- ggplot() +
+    amap <- iOMAP(dat,OMap_type,OMap_bufr,LAT_bottom,LAT_top,LON_left,LON_right)
+  else amap <- ggplot() +
       coord_sf(ylim=c(LAT_bottom,LAT_top),
                xlim=c(LON_left,LON_right))
+  ## Possibly highlight a walk
+  if (!is.null(walk)) {
+    walkdat <- ggplot2::ggplot_build(walk)$data[[3]] #????
+    w.lonrng <- ggplot2::ggplot_build(walk)$layout$panel_params[[1]]$x.range
+    w.latrng <- ggplot2::ggplot_build(walk)$layout$panel_params[[1]]$y.range
+    amap <- amap +
+      geom_path(data=walkdat,
+                mapping=aes(x=.data$x,y=.data$y,group=.data$group),
+                color="yellow",size=3)
+  }
   ## Getting starting points of each segment
   walksum <- iWalkSumPts(dat)
-  ## Add the track
-  map <- omap +
+  ## Add all of the track
+  amap <- amap +
     geom_path(data=dat,
               mapping=aes(x=.data$Longitude,y=.data$Latitude,
                           group=.data$trackID,color=.data$Type,
@@ -105,17 +117,26 @@ allTracksMap <- function(dat,title=NULL,label_tracks=TRUE,
     scale_size_manual(values=szs) +
     theme_minimal() +
     theme(legend.position="none",axis.title=element_blank())
+  ## Add box around the walk if one is shown
+  if (!is.null(walk)) {
+    amap <- amap + 
+      ggplot2::annotate("rect",
+                        xmin=w.lonrng[1],xmax=w.lonrng[2],
+                        ymin=w.latrng[1],ymax=w.latrng[2],
+                        color="gray50",fill=NA,size=0.75,linetype="dashed")
+    
+  }
   ## Add title if one is given
-  if (!is.null(title)) map <- map + labs(title=title)
+  if (!is.null(title)) amap <- amap + labs(title=title)
   ## Include labels if asked to
   if (label_tracks) 
-    map <- map +
+    amap <- amap +
     ggrepel::geom_text_repel(data=walksum,
                              mapping=aes(x=.data$start_Lon,y=.data$start_Lat,
                                          label=.data$trackID),
                              size=2)
   ## Show the map
-  map
+  amap
 }
 
 

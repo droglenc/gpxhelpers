@@ -1,0 +1,178 @@
+---
+output: html_document
+params:
+  pth: ""
+  datfile: ""
+  project: ""
+  walk: ""
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE,message=FALSE,warning=FALSE)
+
+library(gpxhelpers)
+pth <- params$pth
+datfile <- params$datfile
+project <- params$project
+walk <- params$walk
+
+## Read in all tracks data
+fn <- "Trail Mapping Info.xlsx"
+info <- readxl::read_excel(file.path(pth,fn),sheet="Tracks") %>%
+  dplyr::filter(Project==project)
+walks <- readxl::read_excel(file.path(pth,fn),sheet="Walks") %>%
+  dplyr::filter(Project==project)
+pix <- readxl::read_excel(file.path(pth,fn),sheet="Photos")
+dat <- read.csv(file.path(pth,datfile))
+
+## Identify the walk
+ttl <- paste(walks$Title[walks$Walk==walk])
+ttl <- paste(ttl,ifelse(!is.na(walks$Date[walks$Walk==walk]),
+                        paste("on",
+                              format(walks$Date[walks$Walk==walk],
+                                     format="%B %d, %Y")),""))
+walkIDs <- walkGetTrackIDs(walks,whichWalk=walk)
+awalk <- walkMaker(dat,info,walkIDs,findOrder=FALSE)
+```
+
+---
+title: `r ttl`
+---
+
+## Overview from All Mapped Tracks
+```{r}
+m <- walkMap(awalk)
+allTracksMap(dat,walk=m)
+```
+
+## Summary of This Walk
+```{r}
+m
+```
+
+```{r}
+walkSummary(awalk)
+```
+
+```{r}
+walkElevation(awalk)
+```
+
+## Images from this Walk
+```{r}
+walkPix <- walkGetPhotos(pix,walkIDs,file.path(params$pth,"Images"))
+n <- nrow(walkPix)
+i <- 1
+```
+
+```{r out.width="50%", eval=i<=n, fig.cap=walkPix$Caption[i-1]}
+knitr::include_graphics(walkPix$Photo[i])
+i <- i+1
+```
+
+```{r out.width="50%", eval=i<=n, fig.cap=walkPix$Caption[i-1]}
+knitr::include_graphics(walkPix$Photo[i])
+i <- i+1
+```
+
+```{r out.width="50%", eval=i<=n, fig.cap=walkPix$Caption[i-1]}
+knitr::include_graphics(walkPix$Photo[i])
+i <- i+1
+```
+
+```{r out.width="50%", eval=i<=n, fig.cap=walkPix$Caption[i-1]}
+knitr::include_graphics(walkPix$Photo[i])
+i <- i+1
+```
+
+```{r out.width="50%", eval=i<=n, fig.cap=walkPix$Caption[i-1]}
+knitr::include_graphics(walkPix$Photo[i])
+i <- i+1
+```
+
+```{r out.width="50%", eval=i<=n, fig.cap=walkPix$Caption[i-1]}
+knitr::include_graphics(walkPix$Photo[i])
+i <- i+1
+```
+
+```{r out.width="50%", eval=i<=n, fig.cap=walkPix$Caption[i-1]}
+knitr::include_graphics(walkPix$Photo[i])
+i <- i+1
+```
+
+```{r out.width="50%", eval=i<=n, fig.cap=walkPix$Caption[i-1]}
+knitr::include_graphics(walkPix$Photo[i])
+i <- i+1
+```
+
+```{r out.width="50%", eval=i<=n, fig.cap=walkPix$Caption[i-1]}
+knitr::include_graphics(walkPix$Photo[i])
+i <- i+1
+```
+
+```{r out.width="50%", eval=i<=n, fig.cap=walkPix$Caption[i-1]}
+knitr::include_graphics(walkPix$Photo[i])
+i <- i+1
+```
+
+```{r out.width="50%", eval=i<=n, fig.cap=walkPix$Caption[i-1]}
+knitr::include_graphics(walkPix$Photo[i])
+i <- i+1
+```
+
+```{r out.width="50%", eval=i<=n, fig.cap=walkPix$Caption[i-1]}
+knitr::include_graphics(walkPix$Photo[i])
+i <- i+1
+```
+
+```{r out.width="50%", eval=i<=n, fig.cap=walkPix$Caption[i-1]}
+knitr::include_graphics(walkPix$Photo[i])
+i <- i+1
+```
+
+```{r out.width="50%", eval=i<=n, fig.cap=walkPix$Caption[i-1]}
+knitr::include_graphics(walkPix$Photo[i])
+i <- i+1
+```
+
+```{r out.width="50%", eval=i<=n, fig.cap=walkPix$Caption[i-1]}
+knitr::include_graphics(walkPix$Photo[i])
+i <- i+1
+```
+
+```{r out.width="50%", eval=i<=n, fig.cap=walkPix$Caption[i-1]}
+knitr::include_graphics(walkPix$Photo[i])
+i <- i+1
+```
+
+```{r out.width="50%", eval=i<=n, fig.cap=walkPix$Caption[i-1]}
+knitr::include_graphics(walkPix$Photo[i])
+i <- i+1
+```
+
+```{r out.width="50%", eval=i<=n, fig.cap=walkPix$Caption[i-1]}
+knitr::include_graphics(walkPix$Photo[i])
+i <- i+1
+```
+
+```{r out.width="50%", eval=i<=n, fig.cap=walkPix$Caption[i-1]}
+knitr::include_graphics(walkPix$Photo[i])
+i <- i+1
+```
+
+```{r out.width="50%", eval=i<=n, fig.cap=walkPix$Caption[i-1]}
+knitr::include_graphics(walkPix$Photo[i])
+i <- i+1
+```
+
+```{r out.width="50%", eval=i<=n, fig.cap=walkPix$Caption[i-1]}
+knitr::include_graphics(walkPix$Photo[i])
+i <- i+1
+```
+
+----
+
+```{r results="asis"}
+cat("Generated on",format(lubridate::today(),format="%d %B, %Y"))
+```
+

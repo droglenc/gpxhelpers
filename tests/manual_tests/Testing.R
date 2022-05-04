@@ -11,26 +11,25 @@ info <- readxl::read_excel("Trail Mapping Info.xlsx",sheet="Tracks")
 ## Sanitize the original gpx files (remove times, update descriptions, etc.)
 ##   that were created after the moddate
 sanitizeTracks(pin="Tracks/aaaOriginals",pout="Tracks",trkinfo=info,
-               moddate="2022-05-03")
+               moddate="2022-05-04")
 ## Combine All Tracks into a single GPX file ... useful for GoogleEarth/Maps
-combineTracks2GPX(pin="Tracks",pout="./",fnm="All Tracks")
+combineTracks2GPX(pin="Tracks",pout="./",fnm="All Bayfield")
 ## Write all tracks to a single CSV
-dat <- writeGPXnInfo2CSV(info,"All Tracks.gpx")
+dat <- writeGPXnInfo2CSV(info,"All Bayfield.gpx")
 ## USE THIS IF NO NEW TRACKS .... Read in all tracks CSV data for use below
-dat <- read.csv(file.path("./","All Tracks.csv"))
+dat <- read.csv(file.path("./","All Bayfield.csv"))
 
 
 ### Map all tracks
-mapAllTracks(dat)
-mapAllTracks(dat,OMap_type="none")
-mapAllTracks(dat,OMap_type="none",inclLabels=FALSE)
-mapAllTracks(dat,inclLabels=FALSE,
+allTracksMap(dat)
+allTracksMap(dat,OMap_type="none")
+allTracksMap(dat,
              LAT_bottom=46.485,LAT_top=46.55,
              LON_left=-91.39,LON_right=-91.34)
 
 
 ## Try some "walks"
-allTrackNames <- unique(dat$ID)
+allTrackNames <- unique(dat$trackID)
 ### A random order (after the first two)
 walkIDs <- allTrackNames[grepl("MSKY",allTrackNames)]
 ( walkIDs <- c(walkIDs[1:2],walkIDs[sample(3:length(walkIDs))]) )

@@ -2,6 +2,7 @@
 % Please edit documentation in R/gpxhelpers-internals.R
 \name{iWalkSumPts}
 \alias{iWalkSumPts}
+\alias{iBearing}
 \title{Internal functions.}
 \usage{
 iWalkSumPts(walkdat)
