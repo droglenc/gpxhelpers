@@ -1,7 +1,7 @@
 ---
 output: html_document
 params:
-  pth: ""
+  basedir: ""
   datfile: ""
   project: ""
   walk: ""
@@ -9,21 +9,22 @@ params:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo=FALSE,message=FALSE,warning=FALSE)
+knitr::opts_knit$set(root.dir=params$basedir)
 
 library(gpxhelpers)
-pth <- params$pth
 datfile <- params$datfile
 project <- params$project
 walk <- params$walk
-
+```
+```{r prepData, results="hide"}
 ## Read in all tracks data
 fn <- "Trail Mapping Info.xlsx"
-info <- readxl::read_excel(file.path(pth,fn),sheet="Tracks") %>%
+info <- readxl::read_excel(fn,sheet="Tracks") %>%
   dplyr::filter(Project==project)
-walks <- readxl::read_excel(file.path(pth,fn),sheet="Walks") %>%
+walks <- readxl::read_excel(fn,sheet="Walks") %>%
   dplyr::filter(Project==project)
-pix <- readxl::read_excel(file.path(pth,fn),sheet="Photos")
-dat <- read.csv(file.path(pth,datfile))
+pix <- readxl::read_excel(fn,sheet="Photos")
+dat <- read.csv(datfile)
 
 ## Identify the walk
 ttl <- paste(walks$Title[walks$Walk==walk])
@@ -58,115 +59,115 @@ walkSummary(awalk)
 walkElevation(awalk)
 ```
 
-## Images from this Walk
-```{r}
-walkPix <- walkGetPhotos(pix,walkIDs,file.path(params$pth,"Images"))
+```{r results="asis"}
+walkPix <- walkGetPhotos(pix,walkIDs,file.path(basedir,"Images"))
 n <- nrow(walkPix)
 i <- 1
+if (n>0) cat("## Images from These Tracks")
 ```
 
 ```{r out.width="50%", eval=i<=n, fig.cap=walkPix$Caption[i-1]}
-knitr::include_graphics(walkPix$Photo[i])
+suppressWarnings(knitr::include_graphics(walkPix$Photo[i]))
 i <- i+1
 ```
 
 ```{r out.width="50%", eval=i<=n, fig.cap=walkPix$Caption[i-1]}
-knitr::include_graphics(walkPix$Photo[i])
+suppressWarnings(knitr::include_graphics(walkPix$Photo[i]))
 i <- i+1
 ```
 
 ```{r out.width="50%", eval=i<=n, fig.cap=walkPix$Caption[i-1]}
-knitr::include_graphics(walkPix$Photo[i])
+suppressWarnings(knitr::include_graphics(walkPix$Photo[i]))
 i <- i+1
 ```
 
 ```{r out.width="50%", eval=i<=n, fig.cap=walkPix$Caption[i-1]}
-knitr::include_graphics(walkPix$Photo[i])
+suppressWarnings(knitr::include_graphics(walkPix$Photo[i]))
 i <- i+1
 ```
 
 ```{r out.width="50%", eval=i<=n, fig.cap=walkPix$Caption[i-1]}
-knitr::include_graphics(walkPix$Photo[i])
+suppressWarnings(knitr::include_graphics(walkPix$Photo[i]))
 i <- i+1
 ```
 
 ```{r out.width="50%", eval=i<=n, fig.cap=walkPix$Caption[i-1]}
-knitr::include_graphics(walkPix$Photo[i])
+suppressWarnings(knitr::include_graphics(walkPix$Photo[i]))
 i <- i+1
 ```
 
 ```{r out.width="50%", eval=i<=n, fig.cap=walkPix$Caption[i-1]}
-knitr::include_graphics(walkPix$Photo[i])
+suppressWarnings(knitr::include_graphics(walkPix$Photo[i]))
 i <- i+1
 ```
 
 ```{r out.width="50%", eval=i<=n, fig.cap=walkPix$Caption[i-1]}
-knitr::include_graphics(walkPix$Photo[i])
+suppressWarnings(knitr::include_graphics(walkPix$Photo[i]))
 i <- i+1
 ```
 
 ```{r out.width="50%", eval=i<=n, fig.cap=walkPix$Caption[i-1]}
-knitr::include_graphics(walkPix$Photo[i])
+suppressWarnings(knitr::include_graphics(walkPix$Photo[i]))
 i <- i+1
 ```
 
 ```{r out.width="50%", eval=i<=n, fig.cap=walkPix$Caption[i-1]}
-knitr::include_graphics(walkPix$Photo[i])
+suppressWarnings(knitr::include_graphics(walkPix$Photo[i]))
 i <- i+1
 ```
 
 ```{r out.width="50%", eval=i<=n, fig.cap=walkPix$Caption[i-1]}
-knitr::include_graphics(walkPix$Photo[i])
+suppressWarnings(knitr::include_graphics(walkPix$Photo[i]))
 i <- i+1
 ```
 
 ```{r out.width="50%", eval=i<=n, fig.cap=walkPix$Caption[i-1]}
-knitr::include_graphics(walkPix$Photo[i])
+suppressWarnings(knitr::include_graphics(walkPix$Photo[i]))
 i <- i+1
 ```
 
 ```{r out.width="50%", eval=i<=n, fig.cap=walkPix$Caption[i-1]}
-knitr::include_graphics(walkPix$Photo[i])
+suppressWarnings(knitr::include_graphics(walkPix$Photo[i]))
 i <- i+1
 ```
 
 ```{r out.width="50%", eval=i<=n, fig.cap=walkPix$Caption[i-1]}
-knitr::include_graphics(walkPix$Photo[i])
+suppressWarnings(knitr::include_graphics(walkPix$Photo[i]))
 i <- i+1
 ```
 
 ```{r out.width="50%", eval=i<=n, fig.cap=walkPix$Caption[i-1]}
-knitr::include_graphics(walkPix$Photo[i])
+suppressWarnings(knitr::include_graphics(walkPix$Photo[i]))
 i <- i+1
 ```
 
 ```{r out.width="50%", eval=i<=n, fig.cap=walkPix$Caption[i-1]}
-knitr::include_graphics(walkPix$Photo[i])
+suppressWarnings(knitr::include_graphics(walkPix$Photo[i]))
 i <- i+1
 ```
 
 ```{r out.width="50%", eval=i<=n, fig.cap=walkPix$Caption[i-1]}
-knitr::include_graphics(walkPix$Photo[i])
+suppressWarnings(knitr::include_graphics(walkPix$Photo[i]))
 i <- i+1
 ```
 
 ```{r out.width="50%", eval=i<=n, fig.cap=walkPix$Caption[i-1]}
-knitr::include_graphics(walkPix$Photo[i])
+suppressWarnings(knitr::include_graphics(walkPix$Photo[i]))
 i <- i+1
 ```
 
 ```{r out.width="50%", eval=i<=n, fig.cap=walkPix$Caption[i-1]}
-knitr::include_graphics(walkPix$Photo[i])
+suppressWarnings(knitr::include_graphics(walkPix$Photo[i]))
 i <- i+1
 ```
 
 ```{r out.width="50%", eval=i<=n, fig.cap=walkPix$Caption[i-1]}
-knitr::include_graphics(walkPix$Photo[i])
+suppressWarnings(knitr::include_graphics(walkPix$Photo[i]))
 i <- i+1
 ```
 
 ```{r out.width="50%", eval=i<=n, fig.cap=walkPix$Caption[i-1]}
-knitr::include_graphics(walkPix$Photo[i])
+suppressWarnings(knitr::include_graphics(walkPix$Photo[i]))
 i <- i+1
 ```
 

@@ -31,7 +31,7 @@ allTracksMap(
   walk = NULL
 )
 
-walkReports(walk, project, datfile, pth = "", tmplt = "Walk_Template.Rmd")
+walkReports(walk, project, datfile, basedir, tmplt = "Walk_Template.Rmd")
 }
 \arguments{
 \item{dat}{A data frame that contains tracks to map, contiguous tracks for \code{walkMap} that are usually made with \code{\link{walkMaker}} and all tracks for \code{allTracksMap}.}
@@ -58,7 +58,7 @@ walkReports(walk, project, datfile, pth = "", tmplt = "Walk_Template.Rmd")
 
 \item{datfile}{The name of the file in \code{pth} that contains all of the track information.}
 
-\item{pth}{A path string to \code{datfile} and where the resultant HTML file will be written.}
+\item{basedir}{A path string to where \code{datfile}, the folder with the images, and the folder in which to put the resultant HTML file reside.}
 
 \item{tmplt}{A name for the template to use.}
 }
@@ -81,11 +81,11 @@ NONE YET
 ## None yet.
 
 \dontrun{
-pth <- "C:/aaaPersonal/Maps_GPS/Bayfield_County"
+basedir <- "C:/aaaPersonal/Maps_GPS/Bayfield_County"
 datfile <- "All Bayfield.csv"
 project <- "Bayfield County"
-walk <- c("MSKY2WLDN1")
-walkReports(walk,project,datfile,pth)
+walk <- c("FR4101","RYND1","JANN1","NDLTS1","MSKY2WLDN1","EAGLEBLOCK","OGLEBLOCK")[1]
+walkReports(walk,project,datfile,basedir)
 }
 
 }

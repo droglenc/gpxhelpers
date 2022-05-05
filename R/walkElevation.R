@@ -28,13 +28,13 @@ walkElevation <- function(walkdata,title=NULL,elev_bufr=0.01,maval=10) {
   ## Find min and max elevations to set buffer around the plot
   min_elev <- min(walkdata$Elevation)*(1-elev_bufr)
   max_elev <- max(walkdata$Elevation)*(1+elev_bufr)
-  ## Make the plot
+  ## Make the plot?
   elev <- ggplot() +
     geom_ribbon(data=walkdata,
                 mapping=aes(x=.data$Distance,ymin=min_elev,ymax=.data$maElevation),
-                fill="gray80") +
+                fill="gray80",na.rm=TRUE) +
     geom_line(data=walkdata,
-              mapping=aes(x=.data$Distance,y=.data$maElevation)) +
+              mapping=aes(x=.data$Distance,y=.data$maElevation),na.rm=TRUE) +
     geom_label(data=walksum,
                mapping=aes(x=.data$start_Dist,y=.data$start_Elev,
                            label=.data$trknum),

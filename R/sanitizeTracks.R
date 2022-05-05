@@ -28,7 +28,7 @@ sanitizeTracks <- function(pin,pout,trkinfo,
   fns <- list.files(pattern="gpx",path=pin)
   ## Reduce to only those files modified since the given date
   finfo <- file.info(file.path(pin,fns))
-  fns <- fns[which(finfo$mtime>moddate)]
+  fns <- fns[which(as.Date(finfo$mtime)>moddate)]
   if (length(fns)==0) cat("\n\nNo new files to sanitize since",
                           format(moddate,format="%B %e, %Y"),
                           ".\n\n")
