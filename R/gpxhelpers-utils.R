@@ -1,8 +1,10 @@
 ## Set some constants
-clrs <- c("Highway"="red3","Paved"="slategrey",
-          "Gravel"="orange3","Trail"="green3")
+clrs <- c("Highway"="red3","Paved"="gray35",
+          "Gravel"="darkorange4","Offroad"="darkorange2",
+          "Trail"="forestgreen")
 ltyps <- c("Public"="solid","Private"="dashed")
-szs <- c("Highway"=1.5,"Paved"=1.25,"Gravel"=1.25,"Trail"=1)
+szs <- c("Highway"=1.5,"Paved"=1.25,
+         "Gravel"=1.25,"Offroad"=1.25,"Trail"=1)
 
 
 ## Used to fix "no visible binding" issue for dplyr verbs

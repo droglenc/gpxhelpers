@@ -48,11 +48,11 @@ walkMap <- function(dat,title=NULL,label_tracks=TRUE,
   mapz <- omap +
     geom_path(data=dat,
               mapping=aes(x=.data$Longitude,y=.data$Latitude,
-                          group=.data$trackID,color=.data$trknum),
+                          group=.data$trknum,color=.data$trknum),
               size=1.5) +
     geom_point(data=walksum,
                mapping=aes(x=.data$start_Lon,y=.data$start_Lat),
-               pch=18,color="white")
+               pch=18,color="white",size=1)
   ## Add labels if asked for
   if (label_tracks) {
     mapz <- mapz +
@@ -106,12 +106,12 @@ allTracksMap <- function(dat,title=NULL,label_tracks=FALSE,
   amap <- amap +
     geom_path(data=dat,
               mapping=aes(x=.data$Longitude,y=.data$Latitude,
-                          group=.data$trackID,color=.data$Type,
+                          group=.data$trknum,color=.data$Type,
                           linetype=.data$Ownership,size=.data$Type)) +
     geom_point(data=walksum,
                mapping=aes(x=.data$start_Lon,y=.data$start_Lat,
                            color=.data$Type),
-               pch=23,fill="white") +
+               pch=23,fill="white",size=1) +
     scale_color_manual(values=clrs) +
     scale_linetype_manual(values=ltyps) +
     scale_size_manual(values=szs) +
@@ -149,8 +149,11 @@ iOMAP <- function(dat,OMap_type,OMap_bufr,
   if(is.null(LON_left)) LON_left <- min(dat$Longitude)*(1+OMap_bufr)
   if(is.null(LON_right)) LON_right <- max(dat$Longitude)*(1-OMap_bufr)
   ### Get the underlying map and use Lat-Long rather than mercator projections
+  options(warn=-1)
   omap <- OpenStreetMap::openmap(c(LAT_top,LON_left),c(LAT_bottom,LON_right),
                                  zoom=NULL,type=OMap_type,mergeTiles=TRUE) %>%
     OpenStreetMap::openproj(projection="+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")
-  OpenStreetMap::autoplot.OpenStreetMap(omap)
+  omap <- OpenStreetMap::autoplot.OpenStreetMap(omap)
+  options(warn=0)
+  omap
 }

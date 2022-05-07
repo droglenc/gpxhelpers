@@ -1,23 +1,27 @@
 library(gpxhelpers)
 
-setwd("C:/aaaPersonal/Maps_GPS/Bayfield_County")
+project <- "Bayfield County"
+basedir <- file.path("c:/aaaPersonal/Maps_GPS",project)
+setwd(basedir)
 
 ## Get track information
-### Run these if you need to update the local Excel file (from GoogleDrive)
-# fn <- googledrive::as_id("1gxSPHK_R1XVzknsKrOeu4Oy8hWf6BjDnwk7-SXnbdrM")
-# googledrive::drive_download(file=fn,overwrite=TRUE)
-info <- readxl::read_excel("Trail Mapping Info.xlsx",sheet="Tracks")
+info <- readxl::read_excel(file.path("data",
+                                     "Trail Mapping Info.xlsx"),
+                                     sheet="Tracks") %>%
+  dplyr::filter(Project==project)
 
 ## Sanitize the original gpx files (remove times, update descriptions, etc.)
 ##   that were created after the moddate
-sanitizeTracks(pin="Tracks/aaaOriginals",pout="Tracks",trkinfo=info,
-               moddate="2022-05-04")
+sanitizeTracks(pin=file.path("Tracks","aaaOriginals"),
+               pout="Tracks",
+               trkinfo=info,
+               moddate="2022-05-05")
 ## Combine All Tracks into a single GPX file ... useful for GoogleEarth/Maps
-combineTracks2GPX(pin="Tracks",pout="./",fnm="All Bayfield")
+combineTracks2GPX(pin="Tracks",pout="Data",fnm="All Bayfield")
 ## Write all tracks to a single CSV
-dat <- writeGPXnInfo2CSV(info,"All Bayfield.gpx")
+dat <- writeGPXnInfo2CSV(info,file.path("Data","All Bayfield.gpx"))
 ## USE THIS IF NO NEW TRACKS .... Read in all tracks CSV data for use below
-dat <- read.csv(file.path("./","All Bayfield.csv"))
+dat <- read.csv(file.path("Data","All Bayfield.csv"))
 
 
 ### Map all tracks

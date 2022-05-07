@@ -81,10 +81,10 @@ NONE YET
 ## None yet.
 
 \dontrun{
-basedir <- "C:/aaaPersonal/Maps_GPS/Bayfield_County"
-datfile <- "All Bayfield.csv"
 project <- "Bayfield County"
-walk <- c("FR4101","RYND1","JANN1","NDLTS1","MSKY2WLDN1","EAGLEBLOCK","OGLEBLOCK")[1]
+basedir <- file.path("C:/aaaPersonal/Maps_GPS",project)
+datfile <- "All Bayfield.csv"
+walk <- c("SILVERHAPPLES2","SILVERHAPPLES1","SILVERLAKE1","FR4101","RYND1","JANN1","NDLTS1","MSKY2WLDN1","EAGLEBLOCK","OGLEBLOCK")[1]
 walkReports(walk,project,datfile,basedir)
 }
 

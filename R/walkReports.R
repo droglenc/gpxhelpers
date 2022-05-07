@@ -17,10 +17,10 @@
 #' 
 #' @examples
 #' \dontrun{
-#' basedir <- "C:/aaaPersonal/Maps_GPS/Bayfield_County"
-#' datfile <- "All Bayfield.csv"
 #' project <- "Bayfield County"
-#' walk <- c("FR4101","RYND1","JANN1","NDLTS1","MSKY2WLDN1","EAGLEBLOCK","OGLEBLOCK")[1]
+#' basedir <- file.path("C:/aaaPersonal/Maps_GPS",project)
+#' datfile <- "All Bayfield.csv"
+#' walk <- c("SILVERHAPPLES2","SILVERHAPPLES1","SILVERLAKE1","FR4101","RYND1","JANN1","NDLTS1","MSKY2WLDN1","EAGLEBLOCK","OGLEBLOCK")[1]
 #' walkReports(walk,project,datfile,basedir)
 #' }
 #' 
@@ -31,7 +31,7 @@ walkReports <- function(walk,project,datfile,basedir,
   tmplt <- file.path(system.file("templates",package="gpxhelpers"),tmplt)
   for (i in seq_along(walk)) {
     ofn <- paste0(walk[i],"_walk.html")
-    message("Processing '",ofn,"'")
+    cat("Processing '",ofn,"' ...",sep="")
     rmarkdown::render(input=tmplt,
                       params=list(basedir=basedir,
                                   project=project,
@@ -41,6 +41,7 @@ walkReports <- function(walk,project,datfile,basedir,
                       output_file=ofn,
                       quiet=TRUE,
                       envir=new.env())
+    cat("Done\n")
   }
 }
 
