@@ -36,8 +36,8 @@ sanitizeTracks <- function(pin,pout,trkinfo,
     ## Now sanitize those files
     for (i in fns) {
       trk <- tools::file_path_sans_ext(i)
-      desc <- paste(trkinfo$From[trkinfo$trackID==trk],
-                    "to",trkinfo$To[trkinfo$trackID==trk])
+      tmp <- trkinfo[trkinfo$trackID==trk,]
+      desc <- iMakeDescription(tmp$Primary,tmp$From,tmp$To)
       if (verbose) cat("Sanitizing:",trk,"-",desc,"\n")
       iSanitizeTrack(f=i,pin=pin,pout=pout,desc=desc,basedate=basedate)
     }

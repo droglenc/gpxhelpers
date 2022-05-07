@@ -21,7 +21,10 @@ walkSummary <- function(walkdata) {
   walksum <- iWalkSumPts(walkdata) %>%
     dplyr::rename(NUM=.data$trknum,Owner=.data$Ownership,
                   CumDist=.data$end_Dist) %>%
-    dplyr::mutate(Description=paste(.data$From,"to",.data$To)) %>%
+    dplyr::mutate(Description=iMakeDescription(.data$Primary,
+                                               .data$From,.data$To),
+                  Description=ifelse(.data$Primary==.data$Description,
+                                     "--",.data$Description)) %>%
     dplyr::select(.data$NUM,.data$trackID,.data$Primary,
                   .data$Description,.data$Type,.data$Owner,
                   .data$Distance,.data$CumDist,.data$DeltaElev)

@@ -4,7 +4,7 @@
 #'
 #' @rdname gpxhelpers-internals
 #' @keywords internal
-#' @aliases iWalkSumPts iBearing
+#' @aliases iWalkSumPts iBearing iMakeDescription
 
 iWalkSumPts <- function(walkdat) {
   ## Find the starting points for each track
@@ -76,4 +76,13 @@ iBearing <- function(Lon,Lat,buf=5) {
     res<315 ~ "West",
     TRUE ~ "South"
   )
+}
+
+
+
+iMakeDescription <- function(Primary,From,To) {
+  if (!is.na(From) & !is.na(To)) desc <- paste(From,"to",To)
+  else if (is.na(From) & is.na(To)) desc <- Primary
+  else if (is.na(From)) desc <- paste("at",To)
+  else desc <- paste("at",From)
 }

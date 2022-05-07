@@ -52,16 +52,16 @@ walkMap <- function(dat,title=NULL,label_tracks=TRUE,
               size=1.5) +
     geom_point(data=walksum,
                mapping=aes(x=.data$start_Lon,y=.data$start_Lat),
-               pch=18,color="white",size=1)
+               pch=18,color="white",size=1) +
+    scale_color_gradient(low=cclrs[1],high=cclrs[2])
   ## Add labels if asked for
   if (label_tracks) {
     mapz <- mapz +
-      geom_label(data=walksum,
+      geom_text(data=walksum,
                  mapping=aes(x=.data$midpt_Lon,y=.data$midpt_Lat,
                              label=.data$trknum,color=.data$trknum,
                              hjust=.data$hjust,
-                             vjust=.data$vjust),
-                 label.padding=grid::unit(0.1,"lines"))
+                             vjust=.data$vjust))
   }
   ## Add title if one is given
   if (!is.null(title)) mapz <- mapz + labs(title=title)

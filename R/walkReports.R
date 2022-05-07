@@ -7,6 +7,7 @@
 #' @param datfile The name of the file in \code{pth} that contains all of the track information.
 #' @param basedir A path string to where \code{datfile}, the folder with the images, and the folder in which to put the resultant HTML file reside.
 #' @param tmplt A name for the template to use.
+#' @param OMap_type Type of OpenStreetMap to use.
 #' 
 #' @details NONE YET
 #' 
@@ -19,15 +20,14 @@
 #' \dontrun{
 #' project <- "Bayfield County"
 #' basedir <- file.path("C:/aaaPersonal/Maps_GPS",project)
-#' datfile <- "All Bayfield.csv"
-#' walk <- c("SILVERHAPPLES2","SILVERHAPPLES1","SILVERLAKE1","FR4101","RYND1","JANN1","NDLTS1","MSKY2WLDN1","EAGLEBLOCK","OGLEBLOCK")[1]
+#' datfile <- paste0(project,".csv")
+#' walk <- "RYND1"
 #' walkReports(walk,project,datfile,basedir)
 #' }
 #' 
-#' @rdname walkMap
 #' @export 
 walkReports <- function(walk,project,datfile,basedir,
-                        tmplt="Walk_Template.Rmd") {
+                        tmplt="Walk_Template.Rmd",OMap_type="bing") {
   tmplt <- file.path(system.file("templates",package="gpxhelpers"),tmplt)
   for (i in seq_along(walk)) {
     ofn <- paste0(walk[i],"_walk.html")
@@ -36,7 +36,8 @@ walkReports <- function(walk,project,datfile,basedir,
                       params=list(basedir=basedir,
                                   project=project,
                                   datfile=datfile,
-                                  walk=walk[i]),
+                                  walk=walk[i],
+                                  OMap_type=OMap_type),
                       output_dir="Walks",
                       output_file=ofn,
                       quiet=TRUE,

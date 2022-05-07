@@ -1,7 +1,15 @@
 ## Set some constants
-clrs <- c("Highway"="red3","Paved"="gray35",
-          "Gravel"="darkorange4","Offroad"="darkorange2",
-          "Trail"="forestgreen")
+### These are good for lighter maps ... e.g., ESRI
+#clrs <- c("Highway"="red3","Paved"="gray35",
+#          "Gravel"="darkorange4","Offroad"="darkorange2",
+#          "Trail"="forestgreen")
+#cclrs <- c("dodgerblue1","dodgerblue4")
+### These are better for darker maps ... e.g., Bing
+clrs <- c("Highway"="red3","Paved"="gray60",
+          "Gravel"="darkorange3","Offroad"="goldenrod2",
+          "Trail"="green3")
+cclrs <- c("gold","darkorange3")
+
 ltyps <- c("Public"="solid","Private"="dashed")
 szs <- c("Highway"=1.5,"Paved"=1.25,
          "Gravel"=1.25,"Offroad"=1.25,"Trail"=1)
@@ -13,7 +21,7 @@ szs <- c("Highway"=1.5,"Paved"=1.25,
 #' @importFrom rlang .data
 
 ## Used to fix "no visible binding" issue for common ggplot2 functions
-#' @importFrom ggplot2 ggplot aes geom_path geom_point geom_line geom_ribbon geom_label scale_color_manual scale_linetype_manual scale_size_manual scale_y_continuous scale_x_continuous expansion coord_sf labs theme_minimal theme element_blank
+#' @importFrom ggplot2 ggplot aes geom_path geom_point geom_line geom_ribbon geom_label geom_text scale_color_manual scale_color_gradient scale_linetype_manual scale_size_manual scale_y_continuous scale_x_continuous expansion coord_sf labs theme_minimal theme element_blank
 
 #' @importFrom magrittr %>%
 #' @export

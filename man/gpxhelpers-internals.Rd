@@ -3,6 +3,7 @@
 \name{iWalkSumPts}
 \alias{iWalkSumPts}
 \alias{iBearing}
+\alias{iMakeDescription}
 \title{Internal functions.}
 \usage{
 iWalkSumPts(walkdat)
