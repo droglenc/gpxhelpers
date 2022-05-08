@@ -21,7 +21,7 @@
 #' project <- "Bayfield County"
 #' basedir <- file.path("C:/aaaPersonal/Maps_GPS",project)
 #' datfile <- paste0(project,".csv")
-#' walk <- "RYND1"
+#' walk <- "FR8131"
 #' walkReports(walk,project,datfile,basedir)
 #' }
 #' 
