@@ -10,7 +10,8 @@ walkReports(
   datfile,
   basedir,
   tmplt = "Walk_Template.Rmd",
-  OMap_type = "bing"
+  map_type = "OpenTopoMap",
+  showFileInBrowser = FALSE
 )
 }
 \arguments{
@@ -24,7 +25,9 @@ walkReports(
 
 \item{tmplt}{A name for the template to use.}
 
-\item{OMap_type}{Type of OpenStreetMap to use.}
+\item{map_type}{Type of OpenStreetMap to use.}
+
+\item{showFileInBrowser}{A logical for whether to open the resultant file in the broswer or not (default is to not).}
 }
 \value{
 None, but an html file will be created.
@@ -38,10 +41,10 @@ NONE YET
 \examples{
 \dontrun{
 project <- "Bayfield County"
-basedir <- file.path("C:/aaaPersonal/Maps_GPS",project)
+basedir <- file.path("C:/aaaPersonal/MAPPING",project)
 datfile <- paste0(project,".csv")
-walk <- "RYND1"
-walkReports(walk,project,datfile,basedir)
+walk <- "FR4138051"
+walkReports(walk,project,datfile,basedir,showFileInBrowser=TRUE)
 }
 
 }

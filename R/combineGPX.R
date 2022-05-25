@@ -62,7 +62,7 @@ combineTracks2GPX <- function(pin,pout,fnm,IDs=NULL) {
 #' 
 #' @export
 writeGPXnInfo2CSV <- function(trkinfo,fnm) {
-  ## Create CSV outpute file name with same base name as GPX file
+  ## Create CSV output file name with same base name as GPX file
   fnmout <- paste0(tools::file_path_sans_ext(fnm),".csv")
   ## Read the GPX data in fnm
   cat("Reading ",fnm,", please be patient .... ",sep="")

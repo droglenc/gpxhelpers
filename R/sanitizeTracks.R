@@ -37,9 +37,13 @@ sanitizeTracks <- function(pin,pout,trkinfo,
     for (i in fns) {
       trk <- tools::file_path_sans_ext(i)
       tmp <- trkinfo[trkinfo$trackID==trk,]
-      desc <- iMakeDescription(tmp$Primary,tmp$From,tmp$To)
-      if (verbose) cat("Sanitizing:",trk,"-",desc,"\n")
-      iSanitizeTrack(f=i,pin=pin,pout=pout,desc=desc,basedate=basedate)
+      if (nrow(tmp)<1)
+        warning(trk,"not found in info file; thus not sanitized!")
+      else {
+        desc <- iMakeDescription(tmp$Primary,tmp$From,tmp$To)
+        if (verbose) cat("Sanitizing:",trk,"-",desc,"\n")
+        iSanitizeTrack(f=i,pin=pin,pout=pout,desc=desc,basedate=basedate)
+      }
     }
   }
 }

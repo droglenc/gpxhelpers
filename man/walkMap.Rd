@@ -7,22 +7,19 @@
 \usage{
 walkMap(
   dat,
-  title = NULL,
-  label_tracks = TRUE,
-  OMap_type = c("esri-topo", "esri", "apple-iphoto", "bing", "stamen-terrain", "none"),
-  OMap_bufr = 4e-05,
+  map_type = c("OpenTopoMap"),
+  map_bufr = 4e-05,
   LAT_bottom = NULL,
   LAT_top = NULL,
   LON_left = NULL,
-  LON_right = NULL
+  LON_right = NULL,
+  label_tracks = TRUE
 )
 
 allTracksMap(
   dat,
-  title = NULL,
-  label_tracks = FALSE,
-  OMap_type = c("esri-topo", "esri", "apple-iphoto", "bing", "stamen-terrain", "none"),
-  OMap_bufr = 4e-05,
+  map_type = c("OpenTopoMap"),
+  map_bufr = 4e-05,
   LAT_bottom = NULL,
   LAT_top = NULL,
   LON_left = NULL,
@@ -33,13 +30,9 @@ allTracksMap(
 \arguments{
 \item{dat}{A data frame that contains tracks to map, contiguous tracks for \code{walkMap} that are usually made with \code{\link{walkMaker}} and all tracks for \code{allTracksMap}.}
 
-\item{title}{A string for the map title.}
+\item{map_type}{A string for the type of OpenStreet map to use under the track paths. Use \code{"none"} to not using an OpenStreet map.}
 
-\item{label_tracks}{A logical for whether (or not) the tracks should be labeled with a unique number in \code{walkMap} or the track ID in \code{allTracksMap}.}
-
-\item{OMap_type}{A string for the type of OpenStreet map to use under the track paths. Use \code{"none"} to not using an OpenStreet map.}
-
-\item{OMap_bufr}{A numeric that makes the OpenStreet map slightly larger than the space that the track paths require.}
+\item{map_bufr}{A numeric that makes the OpenStreet map slightly larger than the space that the track paths require.}
 
 \item{LAT_bottom}{A latitude coordinate for the bottom of the bounding box for the map. Defaults to just below the minimum latitude found in \code{trkdata}.}
 
@@ -49,10 +42,12 @@ allTracksMap(
 
 \item{LON_right}{A longitude coordinate for the right-side of the bounding box for the map. Defaults to just right the maximum latitude found in \code{trkdata}.}
 
+\item{label_tracks}{A logical for whether (or not) the tracks should be labeled with a unique number in \code{walkMap} or the track ID in \code{allTracksMap}.}
+
 \item{walk}{A ggplot2 object made with \code{walkMap} that will be used to highlight the \dQuote{walk} on the map of all tracks.}
 }
 \value{
-Returns a \code{ggplot2} object that is the map. The map will be displayed if the returned object is not assigned to name.
+Returns a \code{leaflet} object that is the map. The map will be displayed if the returned object is not assigned a name.
 }
 \description{
 Create a map or plot elevations for tracks in a data frame that form a contiguous \dQuote{walk}.

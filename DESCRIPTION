@@ -22,6 +22,8 @@ Imports:
     dplyr,
     ggplot2,
     hms,
+    htmltools,
+    leaflet,
     lubridate,
     magrittr,
     rlang,
@@ -29,8 +31,7 @@ Imports:
     ggrepel,
     gpx,
     kableExtra,
-    knitr,
-    OpenStreetMap
+    knitr
 Suggests:
     rmarkdown,
     testthat

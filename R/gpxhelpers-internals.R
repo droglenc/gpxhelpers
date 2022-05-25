@@ -35,14 +35,11 @@ iWalkSumPts <- function(walkdat) {
     dplyr::summarize(midpt_Bearing=iBearing(.data$Longitude,.data$Latitude)) %>%
     dplyr::ungroup() %>%
     dplyr::mutate(duped=duplicated(.data$trackID),
-                  hjust=dplyr::case_when(
-                    .data$midpt_Bearing %in% c("North","South") & !.data$duped ~ -0.5,
-                    .data$midpt_Bearing %in% c("North","South") & .data$duped ~ 1.5,
-                    TRUE ~ 0.5),
-                  vjust=dplyr::case_when(
-                    .data$midpt_Bearing %in% c("East","West") & !.data$duped ~ 1.5,
-                    .data$midpt_Bearing %in% c("East","West") & .data$duped ~ -0.5,
-                    TRUE ~ 0.5)
+                  lbldir=dplyr::case_when(
+                  .data$midpt_Bearing %in% c("North","South") & !.data$duped ~ "left",
+                  .data$midpt_Bearing %in% c("North","South") & .data$duped ~ "right",
+                  .data$midpt_Bearing %in% c("East","West") & !.data$duped ~ "top",
+                  .data$midpt_Bearing %in% c("East","West") & .data$duped ~ "bottom")
     ) %>%
     dplyr::select(-.data$duped)
   mpwalk <- dplyr::left_join(mpwalk,mpbear,by="trknum") %>%
@@ -85,4 +82,13 @@ iMakeDescription <- function(Primary,From,To) {
   else if (is.na(From) & is.na(To)) desc <- Primary
   else if (is.na(From)) desc <- paste("at",To)
   else desc <- paste("at",From)
+}
+
+
+
+iRetClr <- function(x) {
+  clrs <- c("Highway"="#CC0000","Paved"="#336666",
+            "Gravel"="#CC6600","Offroad"="#CC9900",
+            "Trail"="#999933")
+  clrs[[which(names(clrs)==x$Type[1])]]
 }

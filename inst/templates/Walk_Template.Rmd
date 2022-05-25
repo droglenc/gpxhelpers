@@ -5,7 +5,7 @@ params:
   datfile: ""
   project: ""
   walk: ""
-  OMap_type: "bing"
+  map_type: "OpenTopoMap"
 ---
 
 ```{r setup, include=FALSE}
@@ -16,7 +16,7 @@ library(gpxhelpers)
 datfile <- params$datfile
 project <- params$project
 walk <- params$walk
-OMap_type <- params$OMap_type
+map_type <- params$map_type
 ```
 ```{r prepData, results="hide"}
 ## Read in all tracks data
@@ -44,13 +44,12 @@ title: `r ttl`
 
 ## Overview from All Mapped Tracks
 ```{r}
-m <- walkMap(awalk,OMap_type=OMap_type)
-allTracksMap(dat,walk=m,OMap_type=OMap_type)
+allTracksMap(dat,walk=awalk,map_type=map_type)
 ```
 
 ## Summary of This Walk
 ```{r}
-m
+walkMap(awalk,map_type=map_type)
 ```
 
 ```{r}

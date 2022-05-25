@@ -9,8 +9,9 @@ walkMaker(
   trkinfo,
   walkIDs,
   startIDs = walkIDs[1:2],
-  findOrder = TRUE,
-  basedate = "2022-01-01"
+  findOrder = FALSE,
+  basedate = "2022-01-01",
+  verbose = FALSE
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ walkMaker(
 \item{findOrder}{A logical that indicates that the track names in \code{walkIDs} are NOT in walking order and an attempt should be made to place the tracks in a walking order based on the \code{connected} field in \code{trkinfo}. See notes below.}
 
 \item{basedate}{A string with a date that will serve as the base date for the dummy times in the returned data frame. Defaults to "2022-01-01".}
+
+\item{verbose}{A logical for whether the progress of connecting tracks should be displayed or not.}
 }
 \value{
 A date frame with the same variables as \code{trkdata}, but only with the tracks in \code{walkIDs} and in order of the \dQuote{walk}.

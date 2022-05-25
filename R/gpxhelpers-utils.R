@@ -1,20 +1,3 @@
-## Set some constants
-### These are good for lighter maps ... e.g., ESRI
-#clrs <- c("Highway"="red3","Paved"="gray35",
-#          "Gravel"="darkorange4","Offroad"="darkorange2",
-#          "Trail"="forestgreen")
-#cclrs <- c("dodgerblue1","dodgerblue4")
-### These are better for darker maps ... e.g., Bing
-clrs <- c("Highway"="red3","Paved"="gray60",
-          "Gravel"="darkorange3","Offroad"="goldenrod2",
-          "Trail"="green3")
-cclrs <- c("gold","darkorange3")
-
-ltyps <- c("Public"="solid","Private"="dashed")
-szs <- c("Highway"=1.5,"Paved"=1.25,
-         "Gravel"=1.25,"Offroad"=1.25,"Trail"=1)
-
-
 ## Used to fix "no visible binding" issue for dplyr verbs
 ## from here ... https://community.rstudio.com/t/how-to-solve-no-visible-binding-for-global-variable-note/28887/2
 ## See example in iCombineAllTracks2CXV
@@ -23,9 +6,48 @@ szs <- c("Highway"=1.5,"Paved"=1.25,
 ## Used to fix "no visible binding" issue for common ggplot2 functions
 #' @importFrom ggplot2 ggplot aes geom_path geom_point geom_line geom_ribbon geom_label geom_text scale_color_manual scale_color_gradient scale_linetype_manual scale_size_manual scale_y_continuous scale_x_continuous expansion coord_sf labs theme_minimal theme element_blank
 
+## Used to fix "no visible binding" issue for common leaflet functions
+#' @importFrom leaflet leaflet addProviderTiles fitBounds addPolylines addLabelOnlyMarkers addRectangles labelOptions highlightOptions
+
 #' @importFrom magrittr %>%
 #' @export
 magrittr::`%>%`
+
+
+#' @title Compare file names in a directory to names in the information file.
+#' 
+#' @description Compare file names in a directory to names in the information file to see if any tracks are missing in either place.
+#' 
+#' @param pin Path to directory with track files.
+#' @param trkinfo Database with track information.
+#' 
+#' @details NONE YET
+#' 
+#' @return None, but informative messages will be written as side effects
+#' 
+#' @author Derek H. Ogle
+#' @keywords manip
+#' 
+#' @examples
+#' ## None yet.
+#' 
+#' @export
+compareFiles2Info <- function(pin,trkinfo) {
+  trksInWD <- tools::file_path_sans_ext(list.files(pattern="gpx",path=pin))
+  trksInInfo <- trkinfo$trackID
+  tmp <- !trksInWD %in% trksInInfo
+  if (any(tmp))
+    cat("Tracks in '",pin,"' not in info file: ",
+        paste(trksInWD[tmp],collapse=" "),"\n",sep="")
+  else
+    cat("All tracks in '",pin,"' are in the info file!\n",sep="")
+  tmp <- !trksInInfo %in% trksInWD
+  if (any(tmp))
+    cat("Tracks in the info file not in '",pin,"': ",
+        paste(trksInInfo[tmp],collapse=" "),"\n",sep="")
+  else
+    cat("All tracks in info file are in '",pin,"'!\n",sep="")
+}
 
 
 #' @title Calculate distance along the track.

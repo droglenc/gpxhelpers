@@ -8,6 +8,7 @@
 #' @param startIDs A length two vector of track name strings that indicate the order of the first two tracks in the \dQuote{walk}. Defaults to the first two items in \code{walkIDs}.
 #' @param findOrder A logical that indicates that the track names in \code{walkIDs} are NOT in walking order and an attempt should be made to place the tracks in a walking order based on the \code{connected} field in \code{trkinfo}. See notes below.
 #' @param basedate A string with a date that will serve as the base date for the dummy times in the returned data frame. Defaults to "2022-01-01".
+#' @param verbose A logical for whether the progress of connecting tracks should be displayed or not.
 #' 
 #' @details NONE YET
 #' 
@@ -25,12 +26,13 @@
 
 #' @export
 walkMaker <- function(trkdata,trkinfo,walkIDs,startIDs=walkIDs[1:2],
-                     findOrder=TRUE,basedate="2022-01-01") {
+                      findOrder=FALSE,basedate="2022-01-01",verbose=FALSE) {
   ## Arrange walkIDs (from startIDs)
   if (findOrder) walkIDs <- iOrderWalk(walkIDs,trkinfo,startIDs)
-  cat("Segment order:",paste(walkIDs,collapse=" -> "),"\n\n")
+  if (verbose) cat("Segment order:",paste(walkIDs,collapse=" -> "),"\n\n")
   
   ## Initiate walk data frame by connecting first two tracks
+  cat("Connecting:",startIDs[1],"to",startIDs[2],"\n")
   seg1 <- dplyr::filter(trkdata,.data$trackID==startIDs[1]) %>%
     dplyr::mutate(trknum=1)
   seg1_begpt <- seg1[1,c("Longitude","Latitude")]
@@ -57,6 +59,7 @@ walkMaker <- function(trkdata,trkinfo,walkIDs,startIDs=walkIDs[1:2],
   ## Loop through other tracks and append
   if (length(walkIDs)>2) {
     for (i in 3:length(walkIDs)) {
+      if (verbose) cat("Connecting:",walkIDs[i-1],"to",walkIDs[i],"\n")
       nextseg <- dplyr::filter(trkdata,.data$trackID==walkIDs[i]) %>%
         dplyr::mutate(trknum=i)
       prevseg_endpt <- walkdat[nrow(walkdat),c("Longitude","Latitude")]
