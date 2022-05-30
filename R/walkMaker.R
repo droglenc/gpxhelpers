@@ -32,7 +32,7 @@ walkMaker <- function(trkdata,trkinfo,walkIDs,startIDs=walkIDs[1:2],
   if (verbose) cat("Segment order:",paste(walkIDs,collapse=" -> "),"\n\n")
   
   ## Initiate walk data frame by connecting first two tracks
-  cat("Connecting:",startIDs[1],"to",startIDs[2],"\n")
+  if (verbose) cat("Connecting:",startIDs[1],"to",startIDs[2],"\n")
   seg1 <- dplyr::filter(trkdata,.data$trackID==startIDs[1]) %>%
     dplyr::mutate(trknum=1)
   seg1_begpt <- seg1[1,c("Longitude","Latitude")]
