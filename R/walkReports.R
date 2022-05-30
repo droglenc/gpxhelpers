@@ -9,6 +9,7 @@
 #' @param tmplt A name for the template to use.
 #' @param map_type Type of OpenStreetMap to use.
 #' @param showFileInBrowser A logical for whether to open the resultant file in the broswer or not (default is to not).
+#' @param quiet A logical for whether the progress of processing the markdown file should be shown (default is to not).
 #' 
 #' @details NONE YET
 #' 
@@ -29,11 +30,11 @@
 #' @export 
 walkReports <- function(walk,project,datfile,basedir,
                         tmplt="Walk_Template.Rmd",map_type="OpenTopoMap",
-                        showFileInBrowser=FALSE) {
+                        showFileInBrowser=FALSE,quiet=TRUE) {
   tmplt <- file.path(system.file("templates",package="gpxhelpers"),tmplt)
   for (i in seq_along(walk)) {
-    ofn <- paste0(walk[i],"_walk.html")
-    cat("Processing '",ofn,"' ...",sep="")
+    ofn <- paste0(walk[i],".html")
+    cat("Processing '",ofn,"' to '",basedir,"' ...",sep="")
     rmarkdown::render(input=tmplt,
                       params=list(basedir=basedir,
                                   project=project,
@@ -42,13 +43,12 @@ walkReports <- function(walk,project,datfile,basedir,
                                   map_type=map_type),
                       output_dir="Walks",
                       output_file=ofn,
-                      quiet=TRUE,
+                      quiet=quiet,
                       envir=new.env())
     cat("Done\n")
     if (showFileInBrowser)
       utils::browseURL(paste0('file://',
-                              file.path(basedir,"Walks",
-                                        paste0(walk,"_walk.html"))))
+                              file.path(basedir,"Walks",ofn)))
   }
 }
 

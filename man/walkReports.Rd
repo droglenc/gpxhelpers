@@ -11,7 +11,8 @@ walkReports(
   basedir,
   tmplt = "Walk_Template.Rmd",
   map_type = "OpenTopoMap",
-  showFileInBrowser = FALSE
+  showFileInBrowser = FALSE,
+  quiet = TRUE
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ walkReports(
 \item{map_type}{Type of OpenStreetMap to use.}
 
 \item{showFileInBrowser}{A logical for whether to open the resultant file in the broswer or not (default is to not).}
+
+\item{quiet}{A logical for whether the progress of processing the markdown file should be shown (default is to not).}
 }
 \value{
 None, but an html file will be created.
