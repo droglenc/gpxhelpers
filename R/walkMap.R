@@ -3,12 +3,11 @@
 #' @description Create a map or plot elevations for tracks in a data frame that form a contiguous \dQuote{walk}.
 #' 
 #' @param dat A data frame that contains tracks to map, contiguous tracks for \code{walkMap} that are usually made with \code{\link{walkMaker}} and all tracks for \code{allTracksMap}.
-#' @param map_type A string for the type of OpenStreet map to use under the track paths. Use \code{"none"} to not using an OpenStreet map.
-#' @param map_bufr A numeric that makes the OpenStreet map slightly larger than the space that the track paths require.
 #' @param LAT_bottom A latitude coordinate for the bottom of the bounding box for the map. Defaults to just below the minimum latitude found in \code{trkdata}.
 #' @param LAT_top A latitude coordinate for the top of the bounding box for the map. Defaults to just above the maximum latitude found in \code{trkdata}.
 #' @param LON_left A longitude coordinate for the left-side of the bounding box for the map. Defaults to just left of the minimum latitude found in \code{trkdata}.
 #' @param LON_right A longitude coordinate for the right-side of the bounding box for the map. Defaults to just right the maximum latitude found in \code{trkdata}.
+#' @param map_bufr A numeric that makes the OpenStreet map slightly larger than the space that the track paths require.
 #' @param label_tracks A logical for whether (or not) the tracks should be labeled with a unique number in \code{walkMap} or the track ID in \code{allTracksMap}.
 #' @param walk A ggplot2 object made with \code{walkMap} that will be used to highlight the \dQuote{walk} on the map of all tracks.
 #' 
@@ -26,12 +25,9 @@
 #' 
 #' @rdname walkMap
 #' @export 
-walkMap <- function(dat,map_type=c("OpenTopoMap"),map_bufr=0.00004,
-                    LAT_bottom=NULL,LAT_top=NULL,
-                    LON_left=NULL,LON_right=NULL,
+walkMap <- function(dat,LAT_bottom=NULL,LAT_top=NULL,
+                    LON_left=NULL,LON_right=NULL,map_bufr=0.00004,
                     label_tracks=TRUE) {
-  ## Handle default arguments
-  map_type <- match.arg(map_type)
   ## Handle map bounding box
   rngLon <- range(dat$Longitude)*c(1-map_bufr,1+map_bufr)
   rngLat <- range(dat$Latitude)*c(1-map_bufr,1+map_bufr)
@@ -43,8 +39,19 @@ walkMap <- function(dat,map_type=c("OpenTopoMap"),map_bufr=0.00004,
   walksum <- iWalkSumPts(dat)
   ## Make the underlyling leaflet map
   amap <- leaflet() %>%
-    addProviderTiles(provider=map_type) %>%
-    fitBounds(LON_left,LAT_bottom,LON_right,LAT_top)
+    addProviderTiles(provider="OpenTopoMap",group="Topo/Roads") %>%
+    addProviderTiles(provider="Esri.WorldImagery",group="Imagery") %>%
+    fitBounds(LON_left,LAT_bottom,LON_right,LAT_top) %>%
+    addLayersControl(
+      baseGroups=c("Topo/Roads","Imagery"),
+      options=layersControlOptions(collapsed=TRUE)
+    ) %>%
+    addMeasure(
+      position = "bottomleft",
+      primaryLengthUnit = "miles",
+      primaryAreaUnit = "sqmiles",
+      activeColor = "#ff4932",
+      completedColor = "#e2365d")
   ## Map the walk
   for (i in walksum$trknum) {
     tmp <- dplyr::filter(dat,.data$trknum==i)
@@ -83,12 +90,9 @@ walkMap <- function(dat,map_type=c("OpenTopoMap"),map_bufr=0.00004,
 
 #' @rdname walkMap
 #' @export
-allTracksMap <- function(dat,map_type=c("OpenTopoMap"),map_bufr=0.00004,
-                         LAT_bottom=NULL,LAT_top=NULL,
-                         LON_left=NULL,LON_right=NULL,
+allTracksMap <- function(dat,LAT_bottom=NULL,LAT_top=NULL,
+                         LON_left=NULL,LON_right=NULL,map_bufr=0.00004,
                          walk=NULL) {
-  ## Handle default arguments
-  map_type <- match.arg(map_type)
   ## Handle map bounding box
   rngLon <- range(dat$Longitude)*c(1-map_bufr,1+map_bufr)
   rngLat <- range(dat$Latitude)*c(1-map_bufr,1+map_bufr)
@@ -98,11 +102,20 @@ allTracksMap <- function(dat,map_type=c("OpenTopoMap"),map_bufr=0.00004,
   if (is.null(LON_right)) LON_right <- rngLon[2]
   ## Make the underlyling leaflet map
   amap <- leaflet() %>%
-    addProviderTiles(provider=map_type) %>%
-    fitBounds(LON_left,LAT_bottom,LON_right,LAT_top)
-  ## Possibly highlight a walk
-  if (!is.null(walk)) {
-  }
+    addProviderTiles(provider="OpenTopoMap",group="Topo/Roads") %>%
+    addProviderTiles(provider="Esri.WorldImagery",group="Imagery") %>%
+    addProviderTiles(provider="CartoDB.PositronNoLabels",group="CartoDB") %>%
+    fitBounds(LON_left,LAT_bottom,LON_right,LAT_top) %>%
+    addLayersControl(
+      baseGroups=c("Topo/Roads","Imagery","CartoDB"),
+      options=layersControlOptions(collapsed=TRUE)
+    ) %>%
+    addMeasure(
+      position = "bottomleft",
+      primaryLengthUnit = "miles",
+      primaryAreaUnit = "sqmiles",
+      activeColor = "#ff4932",
+      completedColor = "#e2365d")
   ## Add all of the tracks
   for (i in unique(dat$trackID)) {
     tmp <- dplyr::filter(dat,.data$trackID==i)

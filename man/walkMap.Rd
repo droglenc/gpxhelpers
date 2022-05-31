@@ -7,32 +7,26 @@
 \usage{
 walkMap(
   dat,
-  map_type = c("OpenTopoMap"),
-  map_bufr = 4e-05,
   LAT_bottom = NULL,
   LAT_top = NULL,
   LON_left = NULL,
   LON_right = NULL,
+  map_bufr = 4e-05,
   label_tracks = TRUE
 )
 
 allTracksMap(
   dat,
-  map_type = c("OpenTopoMap"),
-  map_bufr = 4e-05,
   LAT_bottom = NULL,
   LAT_top = NULL,
   LON_left = NULL,
   LON_right = NULL,
+  map_bufr = 4e-05,
   walk = NULL
 )
 }
 \arguments{
 \item{dat}{A data frame that contains tracks to map, contiguous tracks for \code{walkMap} that are usually made with \code{\link{walkMaker}} and all tracks for \code{allTracksMap}.}
-
-\item{map_type}{A string for the type of OpenStreet map to use under the track paths. Use \code{"none"} to not using an OpenStreet map.}
-
-\item{map_bufr}{A numeric that makes the OpenStreet map slightly larger than the space that the track paths require.}
 
 \item{LAT_bottom}{A latitude coordinate for the bottom of the bounding box for the map. Defaults to just below the minimum latitude found in \code{trkdata}.}
 
@@ -41,6 +35,8 @@ allTracksMap(
 \item{LON_left}{A longitude coordinate for the left-side of the bounding box for the map. Defaults to just left of the minimum latitude found in \code{trkdata}.}
 
 \item{LON_right}{A longitude coordinate for the right-side of the bounding box for the map. Defaults to just right the maximum latitude found in \code{trkdata}.}
+
+\item{map_bufr}{A numeric that makes the OpenStreet map slightly larger than the space that the track paths require.}
 
 \item{label_tracks}{A logical for whether (or not) the tracks should be labeled with a unique number in \code{walkMap} or the track ID in \code{allTracksMap}.}
 

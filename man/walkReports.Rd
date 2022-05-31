@@ -10,7 +10,6 @@ walkReports(
   datfile,
   basedir,
   tmplt = "Walk_Template.Rmd",
-  map_type = "OpenTopoMap",
   showFileInBrowser = FALSE,
   quiet = TRUE
 )
@@ -25,8 +24,6 @@ walkReports(
 \item{basedir}{A path string to where \code{datfile}, the folder with the images, and the folder in which to put the resultant HTML file reside.}
 
 \item{tmplt}{A name for the template to use.}
-
-\item{map_type}{Type of OpenStreetMap to use.}
 
 \item{showFileInBrowser}{A logical for whether to open the resultant file in the broswer or not (default is to not).}
 

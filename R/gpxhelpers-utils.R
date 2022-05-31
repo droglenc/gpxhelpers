@@ -7,7 +7,7 @@
 #' @importFrom ggplot2 ggplot aes geom_path geom_point geom_line geom_ribbon geom_label geom_text scale_color_manual scale_color_gradient scale_linetype_manual scale_size_manual scale_y_continuous scale_x_continuous expansion coord_sf labs theme_minimal theme element_blank
 
 ## Used to fix "no visible binding" issue for common leaflet functions
-#' @importFrom leaflet leaflet addProviderTiles fitBounds addPolylines addLabelOnlyMarkers addRectangles labelOptions highlightOptions
+#' @importFrom leaflet leaflet addProviderTiles fitBounds addPolylines addLabelOnlyMarkers addRectangles labelOptions highlightOptions addLayersControl layersControlOptions addMeasure
 
 #' @importFrom magrittr %>%
 #' @export

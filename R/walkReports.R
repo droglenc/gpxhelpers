@@ -7,7 +7,6 @@
 #' @param datfile The name of the file in \code{pth} that contains all of the track information.
 #' @param basedir A path string to where \code{datfile}, the folder with the images, and the folder in which to put the resultant HTML file reside.
 #' @param tmplt A name for the template to use.
-#' @param map_type Type of OpenStreetMap to use.
 #' @param showFileInBrowser A logical for whether to open the resultant file in the broswer or not (default is to not).
 #' @param quiet A logical for whether the progress of processing the markdown file should be shown (default is to not).
 #' 
@@ -29,7 +28,7 @@
 #' 
 #' @export 
 walkReports <- function(walk,project,datfile,basedir,
-                        tmplt="Walk_Template.Rmd",map_type="OpenTopoMap",
+                        tmplt="Walk_Template.Rmd",
                         showFileInBrowser=FALSE,quiet=TRUE) {
   tmplt <- file.path(system.file("templates",package="gpxhelpers"),tmplt)
   for (i in seq_along(walk)) {
@@ -39,8 +38,7 @@ walkReports <- function(walk,project,datfile,basedir,
                       params=list(basedir=basedir,
                                   project=project,
                                   datfile=datfile,
-                                  walk=walk[i],
-                                  map_type=map_type),
+                                  walk=walk[i]),
                       output_dir="Walks",
                       output_file=ofn,
                       quiet=quiet,
