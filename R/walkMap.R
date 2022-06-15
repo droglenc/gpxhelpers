@@ -39,11 +39,13 @@ walkMap <- function(dat,LAT_bottom=NULL,LAT_top=NULL,
   walksum <- iWalkSumPts(dat)
   ## Make the underlyling leaflet map
   amap <- leaflet() %>%
+    addTiles(group="Default") %>%
     addProviderTiles(provider="OpenTopoMap",group="Topo/Roads") %>%
     addProviderTiles(provider="Esri.WorldImagery",group="Imagery") %>%
+    addProviderTiles(provider="CartoDB.PositronNoLabels",group="CartoDB") %>%
     fitBounds(LON_left,LAT_bottom,LON_right,LAT_top) %>%
     addLayersControl(
-      baseGroups=c("Topo/Roads","Imagery"),
+      baseGroups=c("Default","Topo/Roads","Imagery","CartoDB"),
       options=layersControlOptions(collapsed=TRUE)
     ) %>%
     addMeasure(
@@ -102,12 +104,13 @@ allTracksMap <- function(dat,LAT_bottom=NULL,LAT_top=NULL,
   if (is.null(LON_right)) LON_right <- rngLon[2]
   ## Make the underlyling leaflet map
   amap <- leaflet() %>%
+    addTiles(group="Default") %>%
     addProviderTiles(provider="OpenTopoMap",group="Topo/Roads") %>%
     addProviderTiles(provider="Esri.WorldImagery",group="Imagery") %>%
     addProviderTiles(provider="CartoDB.PositronNoLabels",group="CartoDB") %>%
     fitBounds(LON_left,LAT_bottom,LON_right,LAT_top) %>%
     addLayersControl(
-      baseGroups=c("Topo/Roads","Imagery","CartoDB"),
+      baseGroups=c("Default","Topo/Roads","Imagery","CartoDB"),
       options=layersControlOptions(collapsed=TRUE)
     ) %>%
     addMeasure(
@@ -125,13 +128,17 @@ allTracksMap <- function(dat,LAT_bottom=NULL,LAT_top=NULL,
                    color=iRetClr(tmp),opacity=0.8,
                    highlightOptions=highlightOptions(color="blue"),
                    label=~htmltools::htmlEscape(paste(trackID[1],sep="<br/>")),
-                   popup=~paste0('<b>',trackID[1],'</b><br/>',
-                                Primary[1],'<br/>',
+                   popup=~paste0('<b>',trackID[1],'</b> - ',Primary[1],'<br/>',
                                 ifelse(!is.na(From[1]),
                                        paste0("From: ",From[1],'<br/>'),""),
                                 ifelse(!is.na(To[1]),
                                        paste0("To: ",To[1],'<br/>'),""),
-                                "Surface: ",Type[1]))
+                                "Distance: ",formatC(Distance[length(.)],
+                                                     format="f",digits=2),
+                                " miles<br/>",
+                                "Elevation Change: ",round(dElevation[1],0),
+                                " feet")
+                   )
   }
   ## Add box around the walk if one is shown
   if (!is.null(walk)) {

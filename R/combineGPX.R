@@ -68,17 +68,40 @@ writeGPXnInfo2CSV <- function(trkinfo,fnm) {
   cat("Reading ",fnm,", please be patient .... ",sep="")
   resgpx <- dplyr::bind_rows(gpx::read_gpx(fnm)$tracks,.id="trackID") %>%
     dplyr::rename(trknum=.data$`Segment ID`)
-  resgpx$Distance <- distAlongTrack(resgpx)
   cat("Done\n")
+  ## Find distance of each track
+  cat("Computing track distances and elevation changes .... ")
+  resgpx$alldist <- distAlongTrack(resgpx)
+  tmp <- resgpx %>%
+    dplyr::group_by(.data$trackID) %>%
+    dplyr::summarize(maxd=max(.data$alldist),mind=min(.data$alldist)) %>%
+    dplyr::mutate(Distance=.data$maxd-.data$mind) %>%
+    dplyr::select(.data$trackID,.data$Distance)
+  tmp3 <- resgpx %>%
+    dplyr::group_by(.data$trackID) %>%
+    dplyr::slice_head(n=1) %>%
+    dplyr::select(.data$trackID,.data$Elevation)
+  tmp4 <- resgpx %>%
+    dplyr::group_by(.data$trackID) %>%
+    dplyr::slice_tail(n=1) %>%
+    dplyr::select(.data$trackID,.data$Elevation)
+  tmp2 <- dplyr::left_join(tmp3,tmp4,by="trackID") %>%
+    dplyr::mutate(dElevation=.data$Elevation.y-.data$Elevation.x) %>%
+    dplyr::select(.data$trackID,.data$dElevation)
+  resgpx <- dplyr::left_join(resgpx,tmp,by="trackID") %>%
+    dplyr::left_join(tmp2,by="trackID")
   ## Append on other track information from trkinfo
   res <- dplyr::left_join(resgpx,trkinfo,by="trackID") %>%
     dplyr::select(.data$trknum,.data$trackID,.data$Primary,.data$From,.data$To,
                   .data$Type,.data$Ownership,.data$Latitude,.data$Longitude,
-                  .data$Distance,.data$Elevation,.data$Time) %>%
-    dplyr::mutate(Elevation=.data$Elevation*3.2808399)
+                  .data$Distance,.data$Elevation,.data$Time,.data$dElevation) %>%
+    dplyr::mutate(Elevation=.data$Elevation*3.2808399,
+                  dElevation=.data$dElevation*3.2808399)
+  cat("Done\n")
   ## Write out the new CSV file
+  cat("Writing data from",fnm,"to",fnmout,"... ")
   utils::write.csv(res,file=fnmout,row.names=FALSE)
-  cat("Data from",fnm,"written to",fnmout,"\n")
+  cat("Done\n")
   ## Return the data.frame
   invisible(res)
 }
