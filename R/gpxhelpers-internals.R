@@ -89,6 +89,6 @@ iMakeDescription <- function(Primary,From,To) {
 iRetClr <- function(x) {
   clrs <- c("Highway"="#CC0000","Paved"="#336666",
             "Gravel"="#CC6600","Offroad"="#CC9900",
-            "Trail"="#999933")
+            "Trail"="#999933", "ATV"="#663300")
   clrs[[which(names(clrs)==x$Type[1])]]
 }
