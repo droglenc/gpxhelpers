@@ -4,12 +4,18 @@
 \alias{writeGPXnInfo2CSV}
 \title{Write track information into a CSV file.}
 \usage{
-writeGPXnInfo2CSV(trkinfo, fnm)
+writeGPXnInfo2CSV(trkinfo, pin, pout, fnm, IDs = NULL)
 }
 \arguments{
 \item{trkinfo}{A data frame that contains information about each track.}
 
-\item{fnm}{A filename (with \dQuote{.gpx} extension) that contains the tracks to output to a CSV file with same base name.}
+\item{pin}{Path after the working directory that contains the original GPX files.}
+
+\item{pout}{Path after the working directory to put the single resultant GPX file.}
+
+\item{fnm}{A filename sans extension that contains the name for the output CSV file.}
+
+\item{IDs}{a character vector of track IDs that should be combined into a single GPX file. If \code{NULL} then all GPX files in \code{pin} will be combined or if \code{fnm} exists in \code{pout} then all GPX files with modification dates after the modification date for \code{fnm} will be appended to \code{fnm}.}
 }
 \value{
 Will invisibly return the data frame that is also written to the CSV file in the same directory.
