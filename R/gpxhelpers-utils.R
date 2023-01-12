@@ -37,16 +37,14 @@ compareFiles2Info <- function(pin,trkinfo) {
   trksInInfo <- trkinfo$trackID
   tmp <- !trksInWD %in% trksInInfo
   if (any(tmp))
-    cat("Tracks in '",pin,"' not in info file: ",
-        paste(trksInWD[tmp],collapse=" "),"\n",sep="")
+    cli::cli_alert_danger("Tracks in '{pin}' not in info file: {paste(trksInWD[tmp],collapse=' ')")
   else
-    cat("All tracks in '",pin,"' are in the info file!\n",sep="")
+    cli::cli_alert_success("All tracks in '{pin}' are in the info file!")
   tmp <- !trksInInfo %in% trksInWD
   if (any(tmp))
-    cat("Tracks in the info file not in '",pin,"': ",
-        paste(trksInInfo[tmp],collapse=" "),"\n",sep="")
+    cli::cli_alert_danger("Tracks in the info file not in '{pin}': {paste(trksInInfo[tmp],collapse=' ')")
   else
-    cat("All tracks in info file are in '",pin,"'!\n",sep="")
+    cli::cli_alert_success("All tracks in info file are in '{pin}'")
 }
 
 
