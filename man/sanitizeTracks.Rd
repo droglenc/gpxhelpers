@@ -4,33 +4,22 @@
 \alias{sanitizeTracks}
 \title{Sanitize tracks.}
 \usage{
-sanitizeTracks(
-  pin,
-  pout,
-  trkinfo,
-  moddate = lubridate::today(),
-  basedate = "2022-01-01",
-  verbose = TRUE
-)
+sanitizeTracks(trkinfo, pin, pout, basedate = "2022-01-01")
 }
 \arguments{
+\item{trkinfo}{A data frame that contains information about each track.}
+
 \item{pin}{Path after the working directory that contains the original GPX files.}
 
 \item{pout}{Path after the working directory to put the sanitized GPX files.}
 
-\item{trkinfo}{A data frame that contains information about each track.}
-
-\item{moddate}{A string with a date for which all GPX files in  \code{pin} after this date will be sanitized. Default to today's date.}
-
 \item{basedate}{A string with a date that will serve as the base date for the dummy times in the sanitized GPX file. Defaults to "2022-01-01".}
-
-\item{verbose}{A logical for whether to show progress or not of files being sanitized.}
 }
 \value{
-None, used for side effect of writing sanitized GPX tracks to the  \code{pout} directory.
+None, used for side effect of writing sanitized GPX tracks to the \code{pout} directory.
 }
 \description{
-Sanitize all GPX track files in a directory by removing the  \code{type} and  \code{extension} fields, adding a  \code{desc}ription field, and replacing  \code{time} with dummy times.
+Sanitize all GPX track files in a directory by removing the \code{type} and  \code{extension} fields, adding a \code{desc}ription field, and replacing \code{time} with dummy times.
 }
 \details{
 NONE YET
