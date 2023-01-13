@@ -50,7 +50,7 @@ iWalkSumPts <- function(walkdat) {
   sumwalk <- dplyr::left_join(hdwalk,tlwalk,by="trknum") %>%
     dplyr::rename(trackID=.data$trackID.x) %>%
     dplyr::select(-.data$trackID.y) %>%
-    dplyr::mutate(Distance=.data$end_Dist-.data$start_Dist,
+    dplyr::mutate(tDistance=.data$end_Dist-.data$start_Dist,
                   DeltaElev=.data$end_Elev-.data$start_Elev) %>%
     dplyr::left_join(mpwalk,by="trknum") %>%
     dplyr::rename(trackID=.data$trackID.x) %>%

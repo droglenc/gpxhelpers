@@ -19,17 +19,19 @@
 #' 
 #' @export
 ## MAIN function
-sanitizeTracks <- function(trkinfo,pin,pout,basedate="2022-01-01") {
+sanitizeTracks <- function(trkinfo,pin,pout,basedate=NULL) {
   # Find all GPX files in the pin directory within the current wd
   fnins <- list.files(pattern="gpx",path=pin)
   fninsmtime <- file.info(file.path(pin,fnins))$mtime
   # Find all GPX files in the pout directory within the current wd
   fnouts <- list.files(pattern="gpx",path=pout)
-  fnoutsmtime <- max(file.info(file.path(pout,fnouts))$mtime)
+  if (length(fnouts)==0) fnoutsmtime <- as.POSIXct("2001-1-1 00:00:01 CST")
+  else fnoutsmtime <- max(file.info(file.path(pout,fnouts))$mtime)
   # Which gpx files in pin have a modtime greater than the max modtime in pout
   fnneedsan <- fnins[fninsmtime>=fnoutsmtime]
   if (length(fnneedsan)==0) {
     cli::cli_alert_warning("No tracks have been modified since {as.character(fnoutsmtime)}. There are no files in {file.path(getwd(),pin)} to sanitize.")
+    cat("\n")
   }
   else { ## Now sanitize those files
     for (i in fnneedsan) {
@@ -47,7 +49,7 @@ sanitizeTracks <- function(trkinfo,pin,pout,basedate="2022-01-01") {
 }
 
 ## INTERNAL function to sanitize a single track
-iSanitizeTrack <- function(f,pin,pout,desc,basedate="2022-01-01") {
+iSanitizeTrack <- function(f,pin,pout,desc,basedate=NULL) {
   ## Read GPX file
   h <- readLines(file.path(pin,f))
   ## Remove the type and extensions
@@ -55,8 +57,14 @@ iSanitizeTrack <- function(f,pin,pout,desc,basedate="2022-01-01") {
   h <- h[-tmp]
   ## Change the description
   h[which(grepl("<desc>",h))] <- paste0("  <desc>",desc,"</desc>")
-  ## Find the time rows and replace them with a dummy date-time
+  ## Find the time rows ...
   tmp <- which(grepl("<time>",h))
+  ## ... and, if no basedate is given, isolate the date in the track
+  if (is.null(basedate)) {
+    basedate <- substr(h[tmp[1]],11,1000)    ## removes first <time>
+    basedate <- substr(basedate,1,unlist(gregexpr("T",basedate))[1]-1)
+  }
+  ## ... and replace them with that date and a dummy time
   tms <- lubridate::ymd_hms(paste(basedate,"00:00:00 CDT")) + 1:length(tmp)
   h[tmp] <- paste0("    <time>",basedate,"T",hms::as_hms(tms),"Z</time>")
   ## Write out the new file

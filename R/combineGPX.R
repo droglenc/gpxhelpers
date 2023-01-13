@@ -38,40 +38,44 @@ combineTracks2GPX <- function(pin,pout,fnm,IDs=NULL) {
     fnm_modtime <- file.info(fnm)$mtime
     ## Send message
     cli::cli_alert_info("The output file '{file.path(getwd(),fnm)}' already exists! Track files modified after {as.character(fnm_modtime)} will be appended to it.")
+    cat("\n")
   }
   
   # Make list of IDs (i.e., gpx track files) to
   ## if IDs is not NULL then user gave specific IDs, use those
-  if (!is.null(IDs)) paste0(IDs,".gpx")
+  if (!is.null(IDs)) IDs_w <- paste0(IDs,".gpx")
   else {
   ## User did not supply IDs, so use all IDs in pin if fnm did not exist
   ##   or will append only those IDs in pin not already in fnm
     ## Get all IDs in pin
-    IDs <- list.files(pattern="gpx",path=pin)
+    IDs_w <- list.files(pattern="gpx",path=pin)
     ## If fnm existed then reduce to only those IDs modified since fnm was modified
     if (fnm_existed) {
-      tmp <- file.info(file.path(pin,IDs))
-      IDs <- IDs[which(tmp$mtime>fnm_modtime)]
-      if (length(IDs)==0) {
+      tmp <- file.info(file.path(pin,IDs_w))
+      IDs_w <- IDs_w[which(tmp$mtime>fnm_modtime)]
+      if (length(IDs_w)==0) {
         finish <- FALSE
         cli::cli_alert_warning("No tracks have been modified since {fnm} was last modified. There is nothing to add to the existing output file.")
+        cat("\n")
       }
     }
   }
+  ## Make an IDs list with and wout the .gpx extension
+  IDs_wo <- tools::file_path_sans_ext(IDs_w)
   
   # Handle modified IDs that may already exist in fnm (as might happen if
   #   the IDs gpx was modified at a later date)
   if (fnm_existed & finish) {
     ## combine all IDs into a string that can be used in grep()
-    tmp <- paste(tools::file_path_sans_ext(IDs),collapse="|")
+    tmp <- paste(IDs_wo,collapse="|")
     ## then grep to see if any of those IDs are in res (the existing output file)
     tmp <- grep(tmp,res)
     ## if any IDs existed in the output file then they must be removed
     if (length(tmp)!=0) {
       ## Send message
       tmp2 <- res[tmp]
-      tmp2 <- substr(tmp2,9,100)         # remove <name> at beginning
-      tmp2 <- substr(tmp2,nchar(tmp2)-7) # remove </name> at end
+      tmp2 <- substr(tmp2,9,100)            # remove <name> at beginning
+      tmp2 <- substr(tmp2,1,nchar(tmp2)-7)  # remove </name> at end
       cli::cli_alert_info("The following tracks existed in the output file but have been modified since that file was created. Thus, they will be removed and the newer track data will be appended to the output file.")
       cat("\n")
       cat(paste(tmp2,collapse=" "))
@@ -94,10 +98,10 @@ combineTracks2GPX <- function(pin,pout,fnm,IDs=NULL) {
   
   # Cycle through IDs (gpx files) appending them to res
   if (finish) {
-    cli::cli_progress_bar("Adding GPX files",total=length(IDs))
-    for (i in seq_along(IDs)) {
+    cli::cli_progress_bar("Adding GPX files",total=length(IDs_w))
+    for (i in seq_along(IDs_w)) {
       ## Read gpx file
-      tmp <- readLines(file.path(pin,IDs[i]))
+      tmp <- readLines(file.path(pin,IDs_w[i]))
       ## If fnm had not existed then start res with first gpx (sans last line)
       if (i==1 & !fnm_existed) res <- tmp[-length(tmp)]
       else {
@@ -115,8 +119,10 @@ combineTracks2GPX <- function(pin,pout,fnm,IDs=NULL) {
     writeLines(res,fnm)
     ## Send completion message
     tmp <- ifelse(fnm_existed,"appended to","combined into")
-    cli::cli_alert_success("{length(IDs)} tracks {tmp} '{file.path(getwd(),fnm)}'")
+    cli::cli_alert_success("{length(IDs_w)} tracks {tmp} '{file.path(getwd(),fnm)}'")
   }
+  # return nothing
+  invisible()
 }
 
   
@@ -144,6 +150,7 @@ combineTracks2GPX <- function(pin,pout,fnm,IDs=NULL) {
 writeGPXnInfo2CSV <- function(trkinfo,pin,pout,fnm,IDs=NULL) {
   # Set logical to finish or not (used instead of stop() later)
   finish <- TRUE
+  
   # Determine if fnm has an extension, if not then add ".csv"
   if(tools::file_ext(fnm)=="") fnm <- paste0(fnm,".csv")
   
@@ -159,32 +166,36 @@ writeGPXnInfo2CSV <- function(trkinfo,pin,pout,fnm,IDs=NULL) {
     fnm_modtime <- file.info(fnm)$mtime
     ## Send message
     cli::cli_alert_info("The output file '{file.path(getwd(),fnm)}' already exists! Track files modified after {as.character(fnm_modtime)} will be appended to it.")
+    cat("\n")
   }
   
   # Make list of IDs (i.e., gpx track files)
   ## if IDs is not NULL then user gave specific IDs, use those
-  if (!is.null(IDs)) paste0(IDs,".gpx")
+  if (!is.null(IDs)) IDs_w <- paste0(IDs,".gpx")
   else {
     ## User did not supply IDs, so use all IDs in pin if fnm did not exist
     ##   or will append only those IDs in pin not already in fnm
     ## Get all IDs in pin
-    IDs <- list.files(pattern="gpx",path=pin)
+    IDs_w <- list.files(pattern="gpx",path=pin)
     ## If fnm existed then reduce to only those IDs modified since fnm was modified
     if (fnm_existed) {
-      tmp <- file.info(file.path(pin,IDs))
-      IDs <- IDs[which(tmp$mtime>fnm_modtime)]
-      if (length(IDs)==0) {
+      tmp <- file.info(file.path(pin,IDs_w))
+      IDs_w <- IDs_w[which(tmp$mtime>fnm_modtime)]
+      if (length(IDs_w)==0) {
         finish <- FALSE
         cli::cli_alert_warning("No tracks have been modified since {fnm} was last modified. There is nothing to add to the existing output file.")
+        cat("\n")
       }
     }
   }
+  ## Make an IDs list with and wout the .gpx extension
+  IDs_wo <- tools::file_path_sans_ext(IDs_w)
   
   # Handle modified IDs that may already exist in fnm (as might happen if
   #   the IDs gpx was modified at a later date)
   if (fnm_existed & finish) {
     ## combine all IDs into a string that can be used in grep()
-    tmp <- paste(tools::file_path_sans_ext(IDs),collapse="|")
+    tmp <- paste(IDs_wo,collapse="|")
     ## then grep to see if any of those IDs are in res (the existing output file)
     tmp <- grep(tmp,res)
     ## if any IDs existed in the output file then they must be removed
@@ -201,29 +212,31 @@ writeGPXnInfo2CSV <- function(trkinfo,pin,pout,fnm,IDs=NULL) {
 
   # Cycle through IDs (gpx files) appending them to res
   if (finish) {
-    cli::cli_progress_bar("Adding GPX files",total=length(IDs))
-    for (i in seq_along(IDs)) {
+    cli::cli_progress_bar("Adding GPX files",total=length(IDs_w))
+    for (i in seq_along(IDs_w)) {
       # Get trkinfo for just the current ID
-      restrkinfo <- dplyr::filter(trkinfo,.data$trackID==IDs[i])
+      restrkinfo <- dplyr::filter(trkinfo,.data$trackID==IDs_wo[i])
       ## Read gpx file, get just tracks object, list should have only 1 so get
       ##   just it, add trackID variable, change elevation to feet, rename the
       ##   Segment ID variable, and remove extensions variable
-      resgpx <- gpx::read_gpx(file.path(pin,IDs[i]))$tracks[[1]] |>
-        dplyr::mutate(trackID=IDs[i],
+      resgpx <- gpx::read_gpx(file.path(pin,IDs_w[i]))$tracks[[1]] |>
+        dplyr::mutate(trackID=IDs_wo[i],
                       Elevation=.data$Elevation*3.2808399) |>
         dplyr::rename(trknum=.data$`Segment ID`) |>
         dplyr::select(-.data$extensions)
       ## Append cumulative distance at each point along the track
-      resgpx$alldist <- distAlongTrack(resgpx)
+      resgpx$Distance <- distAlongTrack(resgpx)
       ## Add the total distance and elevation change (beginning to end) for track
-#      resgpx <- resgpx |>
-#        dplyr::mutate(Distance=max(alldist)-min(alldist),
-#                      dElevation=Elevation[length(Elevation)]-Elevation[1])
+      resgpx <- resgpx |>
+        dplyr::mutate(tDistance=max(.data$Distance)-min(.data$Distance),
+                      dElevation=.data$Elevation[length(.data$Elevation)]-.data$Elevation[1])
       ## Append on track info
       tmp <- dplyr::left_join(resgpx,restrkinfo,by="trackID") |>
-        dplyr::select(.data$trknum,.data$trackID,.data$Primary,.data$From,.data$To,
-                      .data$Type,.data$Ownership,.data$Latitude,.data$Longitude,
-                      .data$Elevation,.data$Time)
+        dplyr::select(.data$trknum,.data$trackID,
+                      .data$Primary,.data$From,.data$To,.data$Type,.data$Ownership,
+                      .data$tDistance,.data$dElevation,
+                      .data$Time,.data$Latitude,.data$Longitude,
+                      .data$Distance,.data$Elevation)
       ## Append to results
       if (fnm_existed | i>1) res <- rbind(res,tmp)
       else (res <- tmp)
@@ -234,6 +247,8 @@ writeGPXnInfo2CSV <- function(trkinfo,pin,pout,fnm,IDs=NULL) {
     utils::write.csv(res,file=fnm,row.names=FALSE)
     ## Send completion message
     tmp <- ifelse(fnm_existed,"appended to","combined into")
-    cli::cli_alert_success("{length(IDs)} tracks {tmp} '{file.path(getwd(),fnm)}'")
+    cli::cli_alert_success("{length(IDs_w)} tracks {tmp} '{file.path(getwd(),fnm)}'")
   }
+  ## Return the results object
+  invisible(res)
 }

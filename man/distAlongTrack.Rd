@@ -13,7 +13,7 @@ distAlongTrack(
 \arguments{
 \item{d}{Data frame that contains the track coordinates.}
 
-\item{vars}{A string vector with the names in  \code{d} that contain the longitude and latitude coordinars (in that order) along the track.}
+\item{vars}{A string vector with the names in  \code{d} that contain the longitude and latitude coordinates (in that order) along the track.}
 
 \item{units}{A string with the desired units for the distances.}
 }

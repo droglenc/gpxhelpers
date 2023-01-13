@@ -4,7 +4,7 @@
 \alias{sanitizeTracks}
 \title{Sanitize tracks.}
 \usage{
-sanitizeTracks(trkinfo, pin, pout, basedate = "2022-01-01")
+sanitizeTracks(trkinfo, pin, pout, basedate = NULL)
 }
 \arguments{
 \item{trkinfo}{A data frame that contains information about each track.}

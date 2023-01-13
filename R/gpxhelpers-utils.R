@@ -37,12 +37,13 @@ compareFiles2Info <- function(pin,trkinfo) {
   trksInInfo <- trkinfo$trackID
   tmp <- !trksInWD %in% trksInInfo
   if (any(tmp))
-    cli::cli_alert_danger("Tracks in '{pin}' not in info file: {paste(trksInWD[tmp],collapse=' ')")
+    cli::cli_alert_danger("Tracks in '{pin}' not in info file: {paste(trksInWD[tmp],collapse=' ')}")
   else
     cli::cli_alert_success("All tracks in '{pin}' are in the info file!")
+  cat("\n")
   tmp <- !trksInInfo %in% trksInWD
   if (any(tmp))
-    cli::cli_alert_danger("Tracks in the info file not in '{pin}': {paste(trksInInfo[tmp],collapse=' ')")
+    cli::cli_alert_danger("Tracks in the info file not in '{pin}': {paste(trksInInfo[tmp],collapse=' ')}")
   else
     cli::cli_alert_success("All tracks in info file are in '{pin}'")
 }
@@ -53,7 +54,7 @@ compareFiles2Info <- function(pin,trkinfo) {
 #' @description Calculates the cumulative distance along the track.
 #' 
 #' @param d Data frame that contains the track coordinates.
-#' @param vars A string vector with the names in  \code{d} that contain the longitude and latitude coordinars (in that order) along the track.
+#' @param vars A string vector with the names in  \code{d} that contain the longitude and latitude coordinates (in that order) along the track.
 #' @param units A string with the desired units for the distances.
 #' 
 #' @details NONE YET
