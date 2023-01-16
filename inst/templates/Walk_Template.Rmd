@@ -19,9 +19,9 @@ walk <- params$walk
 ```{r prepData, results="hide"}
 ## Read in all tracks data
 fn <- file.path("Data","Trail Mapping Info.xlsx")
-info <- readxl::read_excel(fn,sheet="Tracks") %>%
+info <- readxl::read_excel(fn,sheet="Tracks") |>
   dplyr::filter(Project==project)
-walks <- readxl::read_excel(fn,sheet="Walks") %>%
+walks <- readxl::read_excel(fn,sheet="Walks") |>
   dplyr::filter(Project==project)
 pix <- readxl::read_excel(fn,sheet="Photos")
 dat <- read.csv(file.path("Data",datfile))

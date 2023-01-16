@@ -30,7 +30,7 @@ combineTracks2GPX <- function(pin,pout,fnm,IDs=NULL) {
   # Make the full name of output file
   fnm <- file.path(pout,fnm)
   if (fnm_existed) {
-     ## if the output file existed then ... read the file ...
+    ## if the output file existed then ... read the file ...
     res <- readLines(fnm)
     ## ... remove the last line to start the new output file
     res <- res[-length(res)]
@@ -45,8 +45,8 @@ combineTracks2GPX <- function(pin,pout,fnm,IDs=NULL) {
   ## if IDs is not NULL then user gave specific IDs, use those
   if (!is.null(IDs)) IDs_w <- paste0(IDs,".gpx")
   else {
-  ## User did not supply IDs, so use all IDs in pin if fnm did not exist
-  ##   or will append only those IDs in pin not already in fnm
+    ## User did not supply IDs, so use all IDs in pin if fnm did not exist
+    ##   or will append only those IDs in pin not already in fnm
     ## Get all IDs in pin
     IDs_w <- list.files(pattern="gpx",path=pin)
     ## If fnm existed then reduce to only those IDs modified since fnm was modified
@@ -125,7 +125,7 @@ combineTracks2GPX <- function(pin,pout,fnm,IDs=NULL) {
   invisible()
 }
 
-  
+
 #' @title Write track information into a CSV file.
 #' 
 #' @description Combine track information with track GPX data into a single CSV file.
@@ -209,7 +209,7 @@ writeGPXnInfo2CSV <- function(trkinfo,pin,pout,fnm,IDs=NULL) {
       res <- res[-tmp,]
     }
   }
-
+  
   # Cycle through IDs (gpx files) appending them to res
   if (finish) {
     cli::cli_progress_bar("Adding GPX files",total=length(IDs_w))
@@ -226,15 +226,10 @@ writeGPXnInfo2CSV <- function(trkinfo,pin,pout,fnm,IDs=NULL) {
         dplyr::select(-.data$extensions)
       ## Append cumulative distance at each point along the track
       resgpx$Distance <- distAlongTrack(resgpx)
-      ## Add the total distance and elevation change (beginning to end) for track
-      resgpx <- resgpx |>
-        dplyr::mutate(tDistance=max(.data$Distance)-min(.data$Distance),
-                      dElevation=.data$Elevation[length(.data$Elevation)]-.data$Elevation[1])
       ## Append on track info
       tmp <- dplyr::left_join(resgpx,restrkinfo,by="trackID") |>
         dplyr::select(.data$trknum,.data$trackID,
                       .data$Primary,.data$From,.data$To,.data$Type,.data$Ownership,
-                      .data$tDistance,.data$dElevation,
                       .data$Time,.data$Latitude,.data$Longitude,
                       .data$Distance,.data$Elevation)
       ## Append to results
@@ -252,3 +247,79 @@ writeGPXnInfo2CSV <- function(trkinfo,pin,pout,fnm,IDs=NULL) {
   ## Return the results object
   invisible(res)
 }
+
+
+
+#' @title Sanitize tracks.
+#' 
+#' @description Sanitize all GPX track files in a directory by removing the \code{type} and  \code{extension} fields, adding a \code{desc}ription field, and replacing \code{time} with dummy times.
+
+#' @param trkinfo A data frame that contains information about each track.
+#' @param pin Path after the working directory that contains the original GPX files.
+#' @param pout Path after the working directory to put the sanitized GPX files.
+#' @param basedate A string with a date that will serve as the base date for the dummy times in the sanitized GPX file. Defaults to "2022-01-01".
+#' 
+#' @details NONE YET
+#' 
+#' @return None, used for side effect of writing sanitized GPX tracks to the \code{pout} directory.
+#' 
+#' @author Derek H. Ogle
+#' @keywords manip
+#' 
+#' @examples
+#' ## None yet.
+#' 
+#' @export
+## MAIN function
+sanitizeTracks <- function(trkinfo,pin,pout,basedate=NULL) {
+  # Find all GPX files in the pin directory within the current wd
+  fnins <- list.files(pattern="gpx",path=pin)
+  fninsmtime <- file.info(file.path(pin,fnins))$mtime
+  # Find all GPX files in the pout directory within the current wd
+  fnouts <- list.files(pattern="gpx",path=pout)
+  if (length(fnouts)==0) fnoutsmtime <- as.POSIXct("2001-1-1 00:00:01 CST")
+  else fnoutsmtime <- max(file.info(file.path(pout,fnouts))$mtime)
+  # Which gpx files in pin have a modtime greater than the max modtime in pout
+  fnneedsan <- fnins[fninsmtime>=fnoutsmtime]
+  if (length(fnneedsan)==0) {
+    cli::cli_alert_warning("No tracks have been modified since {as.character(fnoutsmtime)}. There are no files in {file.path(getwd(),pin)} to sanitize.")
+    cat("\n")
+  }
+  else { ## Now sanitize those files
+    for (i in fnneedsan) {
+      trk <- tools::file_path_sans_ext(i)
+      tmp <- trkinfo[trkinfo$trackID==trk,]
+      if (nrow(tmp)<1)
+        cli::cli_alert_warning("{trk} not found in info file; thus not sanitized!")
+      else {
+        desc <- iMakeDescription(tmp$Primary,tmp$From,tmp$To)
+        cli::cli_alert_info("Sanitizing: {trk}-{desc}")
+        iSanitizeTrack(f=i,pin=pin,pout=pout,desc=desc,basedate=basedate)
+      }
+    }
+  }
+}
+
+## INTERNAL function to sanitize a single track
+iSanitizeTrack <- function(f,pin,pout,desc,basedate=NULL) {
+  ## Read GPX file
+  h <- readLines(file.path(pin,f))
+  ## Remove the type and extensions
+  tmp <- c(which(grepl("<type>",h)),which(grepl("<extensions>",h)))
+  h <- h[-tmp]
+  ## Change the description
+  h[which(grepl("<desc>",h))] <- paste0("  <desc>",desc,"</desc>")
+  ## Find the time rows ...
+  tmp <- which(grepl("<time>",h))
+  ## ... and, if no basedate is given, isolate the date in the track
+  if (is.null(basedate)) {
+    basedate <- substr(h[tmp[1]],11,1000)    ## removes first <time>
+    basedate <- substr(basedate,1,unlist(gregexpr("T",basedate))[1]-1)
+  }
+  ## ... and replace them with that date and a dummy time
+  tms <- lubridate::ymd_hms(paste(basedate,"00:00:00 CDT")) + 1:length(tmp)
+  h[tmp] <- paste0("    <time>",basedate,"T",hms::as_hms(tms),"Z</time>")
+  ## Write out the new file
+  writeLines(h,file.path(pout,f))
+}
+

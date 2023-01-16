@@ -7,7 +7,7 @@ setwd(basedir)
 ## Get track information
 info <- readxl::read_excel(file.path("data",
                                      "Trail Mapping Info.xlsx"),
-                                     sheet="Tracks") %>%
+                                     sheet="Tracks") |>
   dplyr::filter(Project==project)
 
 ## Sanitize the original gpx files (remove times, update descriptions, etc.)

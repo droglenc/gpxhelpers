@@ -23,7 +23,6 @@ Imports:
     htmltools,
     leaflet,
     lubridate,
-    magrittr,
     rlang,
     geosphere,
     gpx,

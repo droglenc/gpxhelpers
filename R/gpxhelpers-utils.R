@@ -1,6 +1,6 @@
 ## Used to fix "no visible binding" issue for dplyr verbs
 ## from here ... https://community.rstudio.com/t/how-to-solve-no-visible-binding-for-global-variable-note/28887/2
-## See example in iCombineAllTracks2CXV
+## See example in iCombineAllTracks2CSV
 #' @importFrom rlang .data
 
 ## Used to fix "no visible binding" issue for common ggplot2 functions
@@ -9,9 +9,6 @@
 ## Used to fix "no visible binding" issue for common leaflet functions
 #' @importFrom leaflet leaflet addTiles addProviderTiles fitBounds addPolylines addLabelOnlyMarkers addRectangles labelOptions highlightOptions addLayersControl layersControlOptions addMeasure
 
-#' @importFrom magrittr %>%
-#' @export
-magrittr::`%>%`
 
 
 #' @title Compare file names in a directory to names in the information file.
