@@ -94,10 +94,7 @@ iOrderWalk <- function(walkIDs,trkinfo,startIDs=walkIDs[1:2]) {
 
 
 ## INTERNAL: Return color base on type of track
-iRetClr <- function(x) {
-  clrs <- c("Highway"="#CC0000","Paved"="#336666",
-            "Gravel"="#CC6600","Offroad"="#CC9900",
-            "Trail"="#999933", "ATV"="#663300")
+iRetClr <- function(x,clrs) {
   clrs[[which(names(clrs)==x$Type[1])]]
 }
 

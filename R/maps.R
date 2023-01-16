@@ -3,6 +3,7 @@
 #' @description Create a map or plot elevations for tracks in a data frame that form a contiguous \dQuote{walk}.
 #' 
 #' @param dat A data frame that contains tracks to map, contiguous tracks for \code{walkMap} that are usually made with \code{\link{walkMaker}} and all tracks for \code{allTracksMap}.
+#' @param clrs A named vector of colors that will be applied to identify tracks by \code{Type} in \code{dat}.
 #' @param LAT_bottom A latitude coordinate for the bottom of the bounding box for the map. Defaults to just below the minimum latitude found in \code{trkdata}.
 #' @param LAT_top A latitude coordinate for the top of the bounding box for the map. Defaults to just above the maximum latitude found in \code{trkdata}.
 #' @param LON_left A longitude coordinate for the left-side of the bounding box for the map. Defaults to just left of the minimum latitude found in \code{trkdata}.
@@ -26,7 +27,8 @@
 #' 
 #' @rdname walkMap
 #' @export 
-walkMap <- function(dat,LAT_bottom=NULL,LAT_top=NULL,
+walkMap <- function(dat,clrs,
+                    LAT_bottom=NULL,LAT_top=NULL,
                     LON_left=NULL,LON_right=NULL,map_bufr=0.00004,
                     label_tracks=TRUE,verbose=TRUE) {
   ## Build base map
@@ -43,7 +45,7 @@ walkMap <- function(dat,LAT_bottom=NULL,LAT_top=NULL,
     amap <- amap |>
       addPolylines(data=tmp,
                    lng=~Longitude,lat=~Latitude,
-                   color=iRetClr(tmp),opacity=0.8,
+                   color=iRetClr(tmp,clrs),opacity=0.8,
                    highlightOptions=highlightOptions(color="blue"),
                    label=~htmltools::htmlEscape(paste(trackID[1],sep="<br/>")),
                    popup=paste0('<b>',tmp2$trackID,'</b><br/>',
@@ -76,7 +78,8 @@ walkMap <- function(dat,LAT_bottom=NULL,LAT_top=NULL,
 
 #' @rdname walkMap
 #' @export
-allTracksMap <- function(dat,LAT_bottom=NULL,LAT_top=NULL,
+allTracksMap <- function(dat,clrs,
+                         LAT_bottom=NULL,LAT_top=NULL,
                          LON_left=NULL,LON_right=NULL,map_bufr=0.00004,
                          walk=NULL,verbose=TRUE) {
   ## Build base map
@@ -91,7 +94,7 @@ allTracksMap <- function(dat,LAT_bottom=NULL,LAT_top=NULL,
     amap <- amap |>
       addPolylines(data=tmp,
                    lng=~Longitude,lat=~Latitude,
-                   color=iRetClr(tmp),opacity=0.8,
+                   color=iRetClr(tmp,clrs),opacity=0.8,
                    highlightOptions=highlightOptions(color="blue"),
                    label=~htmltools::htmlEscape(paste(trackID[1],sep="<br/>")),
                    popup=~paste0('<b>',trackID[1],'</b> - ',Primary[1],'<br/>',

@@ -7,6 +7,7 @@
 \usage{
 walkMap(
   dat,
+  clrs,
   LAT_bottom = NULL,
   LAT_top = NULL,
   LON_left = NULL,
@@ -18,6 +19,7 @@ walkMap(
 
 allTracksMap(
   dat,
+  clrs,
   LAT_bottom = NULL,
   LAT_top = NULL,
   LON_left = NULL,
@@ -29,6 +31,8 @@ allTracksMap(
 }
 \arguments{
 \item{dat}{A data frame that contains tracks to map, contiguous tracks for \code{walkMap} that are usually made with \code{\link{walkMaker}} and all tracks for \code{allTracksMap}.}
+
+\item{clrs}{A named vector of colors that will be applied to identify tracks by \code{Type} in \code{dat}.}
 
 \item{LAT_bottom}{A latitude coordinate for the bottom of the bounding box for the map. Defaults to just below the minimum latitude found in \code{trkdata}.}
 

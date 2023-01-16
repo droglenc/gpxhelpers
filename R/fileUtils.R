@@ -120,6 +120,7 @@ combineTracks2GPX <- function(pin,pout,fnm,IDs=NULL) {
     ## Send completion message
     tmp <- ifelse(fnm_existed,"appended to","combined into")
     cli::cli_alert_success("{length(IDs_w)} tracks {tmp} '{file.path(getwd(),fnm)}'")
+    cat("\n")
   }
   # return nothing
   invisible()
@@ -243,6 +244,7 @@ writeGPXnInfo2CSV <- function(trkinfo,pin,pout,fnm,IDs=NULL) {
     ## Send completion message
     tmp <- ifelse(fnm_existed,"appended to","combined into")
     cli::cli_alert_success("{length(IDs_w)} tracks {tmp} '{file.path(getwd(),fnm)}'")
+    cat("\n")
   }
   ## Return the results object
   invisible(res)
