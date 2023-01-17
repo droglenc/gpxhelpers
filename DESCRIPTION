@@ -5,7 +5,7 @@ Date: 2022-10-21
 Description: Functions to help me map my GPX files in R.
     These functions may not work for others.
 Authors@R: person("Derek","Ogle",
-    email="derek@derekogle.com",
+    email="DerekOgle51@gmail.com",
     role=c("aut","cre"),
     comment=c(ORCID="0000-0002-0370-9299"))
 URL: https://github.com/droglenc/gpxhelpers
@@ -16,13 +16,13 @@ Depends:
     R (>= 4.0.0)
 Imports:
     utils,
+    cli,
     dplyr,
     ggplot2,
     hms,
     htmltools,
     leaflet,
     lubridate,
-    magrittr,
     rlang,
     geosphere,
     gpx,
@@ -32,4 +32,4 @@ Suggests:
     rmarkdown,
     testthat
 Encoding: UTF-8
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.3

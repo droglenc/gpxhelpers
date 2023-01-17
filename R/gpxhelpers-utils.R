@@ -1,6 +1,6 @@
 ## Used to fix "no visible binding" issue for dplyr verbs
 ## from here ... https://community.rstudio.com/t/how-to-solve-no-visible-binding-for-global-variable-note/28887/2
-## See example in iCombineAllTracks2CXV
+## See example in iCombineAllTracks2CSV
 #' @importFrom rlang .data
 
 ## Used to fix "no visible binding" issue for common ggplot2 functions
@@ -9,9 +9,6 @@
 ## Used to fix "no visible binding" issue for common leaflet functions
 #' @importFrom leaflet leaflet addTiles addProviderTiles fitBounds addPolylines addLabelOnlyMarkers addRectangles labelOptions highlightOptions addLayersControl layersControlOptions addMeasure
 
-#' @importFrom magrittr %>%
-#' @export
-magrittr::`%>%`
 
 
 #' @title Compare file names in a directory to names in the information file.
@@ -37,16 +34,15 @@ compareFiles2Info <- function(pin,trkinfo) {
   trksInInfo <- trkinfo$trackID
   tmp <- !trksInWD %in% trksInInfo
   if (any(tmp))
-    cat("Tracks in '",pin,"' not in info file: ",
-        paste(trksInWD[tmp],collapse=" "),"\n",sep="")
+    cli::cli_alert_danger("Tracks in '{pin}' not in info file: {paste(trksInWD[tmp],collapse=' ')}")
   else
-    cat("All tracks in '",pin,"' are in the info file!\n",sep="")
+    cli::cli_alert_success("All tracks in '{pin}' are in the info file!")
+  cat("\n")
   tmp <- !trksInInfo %in% trksInWD
   if (any(tmp))
-    cat("Tracks in the info file not in '",pin,"': ",
-        paste(trksInInfo[tmp],collapse=" "),"\n",sep="")
+    cli::cli_alert_danger("Tracks in the info file not in '{pin}': {paste(trksInInfo[tmp],collapse=' ')}")
   else
-    cat("All tracks in info file are in '",pin,"'!\n",sep="")
+    cli::cli_alert_success("All tracks in info file are in '{pin}'")
 }
 
 
@@ -55,7 +51,7 @@ compareFiles2Info <- function(pin,trkinfo) {
 #' @description Calculates the cumulative distance along the track.
 #' 
 #' @param d Data frame that contains the track coordinates.
-#' @param vars A string vector with the names in  \code{d} that contain the longitude and latitude coordinars (in that order) along the track.
+#' @param vars A string vector with the names in  \code{d} that contain the longitude and latitude coordinates (in that order) along the track.
 #' @param units A string with the desired units for the distances.
 #' 
 #' @details NONE YET
