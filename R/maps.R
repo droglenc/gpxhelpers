@@ -8,7 +8,7 @@
 #' @param LAT_top A latitude coordinate for the top of the bounding box for the map. Defaults to just above the maximum latitude found in \code{trkdata}.
 #' @param LON_left A longitude coordinate for the left-side of the bounding box for the map. Defaults to just left of the minimum latitude found in \code{trkdata}.
 #' @param LON_right A longitude coordinate for the right-side of the bounding box for the map. Defaults to just right the maximum latitude found in \code{trkdata}.
-#' @param map_bufr A numeric that makes the OpenStreet map slightly larger than the space that the track paths require.
+#' @param map_bufr A numeric that makes the map slightly larger than the space that the track paths require.
 #' @param label_tracks A logical for whether (or not) the tracks should be labeled with a unique number in \code{walkMap} or the track ID in \code{allTracksMap}.
 #' @param walk A ggplot2 object made with \code{walkMap} that will be used to highlight the \dQuote{walk} on the map of all tracks.
 #' @param verbose A logical for whether progress messages should be displayed or not.

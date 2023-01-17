@@ -42,7 +42,7 @@ allTracksMap(
 
 \item{LON_right}{A longitude coordinate for the right-side of the bounding box for the map. Defaults to just right the maximum latitude found in \code{trkdata}.}
 
-\item{map_bufr}{A numeric that makes the OpenStreet map slightly larger than the space that the track paths require.}
+\item{map_bufr}{A numeric that makes the map slightly larger than the space that the track paths require.}
 
 \item{label_tracks}{A logical for whether (or not) the tracks should be labeled with a unique number in \code{walkMap} or the track ID in \code{allTracksMap}.}
 
