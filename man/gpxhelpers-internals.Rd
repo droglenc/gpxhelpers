@@ -3,6 +3,7 @@
 \name{iBaseMap}
 \alias{iBaseMap}
 \alias{iBearing}
+\alias{iBoundBaseMap}
 \alias{iMakeDescription}
 \alias{iOrderWalk}
 \alias{iRetClr}
@@ -10,7 +11,7 @@
 \alias{iWalkSumPts}
 \title{Internal functions.}
 \usage{
-iBaseMap(dat, LAT_bottom, LAT_top, LON_left, LON_right, map_bufr)
+iBaseMap(dat)
 }
 \description{
 Internal functions that are common to several functions in gpxhelpers.

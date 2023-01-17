@@ -4,24 +4,16 @@
 #'
 #' @rdname gpxhelpers-internals
 #' @keywords internal
-#' @aliases iBaseMap iBearing iMakeDescription iOrderWalk iRetClr iSwapFromTo iWalkSumPts
+#' @aliases iBaseMap iBearing iBoundBaseMap iMakeDescription iOrderWalk iRetClr iSwapFromTo iWalkSumPts
 
 ## INTERNAL: Build base leaflet map
-iBaseMap <- function(dat,LAT_bottom,LAT_top,LON_left,LON_right,map_bufr) {
-  ## Handle map bounding box
-  rngLon <- range(dat$Longitude)*c(1-map_bufr,1+map_bufr)
-  rngLat <- range(dat$Latitude)*c(1-map_bufr,1+map_bufr)
-  if (is.null(LAT_bottom)) LAT_bottom <- rngLat[1]
-  if (is.null(LAT_top)) LAT_top <- rngLat[2]
-  if (is.null(LON_left)) LON_left <- rngLon[1]
-  if (is.null(LON_right)) LON_right <- rngLon[2]
+iBaseMap <- function(dat) {
   ## Make the underlyling leaflet map
   leaflet() |>
     addTiles(group="Default") |>
     addProviderTiles(provider="OpenTopoMap",group="Topo/Roads") |>
     addProviderTiles(provider="Esri.WorldImagery",group="Imagery") |>
     addProviderTiles(provider="CartoDB.PositronNoLabels",group="CartoDB") |>
-    fitBounds(LON_left,LAT_bottom,LON_right,LAT_top) |>
     addLayersControl(
       baseGroups=c("Default","Topo/Roads","Imagery","CartoDB"),
       options=layersControlOptions(collapsed=TRUE)
@@ -32,6 +24,20 @@ iBaseMap <- function(dat,LAT_bottom,LAT_top,LON_left,LON_right,map_bufr) {
       primaryAreaUnit = "sqmiles",
       activeColor = "#ff4932",
       completedColor = "#e2365d")
+}
+
+
+iBoundBaseMap <- function(map,dat,
+                          LAT_bottom,LAT_top,LON_left,LON_right,map_bufr) {
+  ## Handle map bounding box
+  rngLon <- range(dat$Longitude)*c(1-map_bufr,1+map_bufr)
+  rngLat <- range(dat$Latitude)*c(1-map_bufr,1+map_bufr)
+  if (is.null(LAT_bottom)) LAT_bottom <- rngLat[1]
+  if (is.null(LAT_top)) LAT_top <- rngLat[2]
+  if (is.null(LON_left)) LON_left <- rngLon[1]
+  if (is.null(LON_right)) LON_right <- rngLon[2]
+  map |>
+    fitBounds(LON_left,LAT_bottom,LON_right,LAT_top)
 }
 
 

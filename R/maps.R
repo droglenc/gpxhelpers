@@ -32,7 +32,9 @@ walkMap <- function(dat,clrs,
                     LON_left=NULL,LON_right=NULL,map_bufr=0.00004,
                     label_tracks=TRUE,verbose=TRUE) {
   ## Build base map
-  amap <- iBaseMap(dat,LAT_bottom,LAT_top,LON_left,LON_right,map_bufr)
+  amap <- iBaseMap(dat)
+  amap <- iBoundBaseMap(amap,dat,LAT_bottom,LAT_top,LON_left,LON_right,map_bufr)
+  
   if (verbose) cli::cli_alert_success("Base map built.")
   ## Get summaries of tracks in the walk (for use below)
   walksum <- iWalkSumPts(dat)
@@ -83,7 +85,12 @@ allTracksMap <- function(dat,clrs,
                          LON_left=NULL,LON_right=NULL,map_bufr=0.00004,
                          walk=NULL,verbose=TRUE) {
   ## Build base map
-  amap <- iBaseMap(dat,LAT_bottom,LAT_top,LON_left,LON_right,map_bufr)
+  amap <- iBaseMap(dat)
+  ## Add bounds to base map depending on whether a walk is given or not
+  if (is.null(walk))
+    amap <- iBoundBaseMap(amap,dat,LAT_bottom,LAT_top,LON_left,LON_right,map_bufr)
+  else 
+    amap <- iBoundBaseMap(amap,walk,LAT_bottom,LAT_top,LON_left,LON_right,map_bufr)
   if (verbose) cli::cli_alert_success("Base map built.")
   ## Add all of the tracks
   if (verbose) cli::cli_progress_bar("Adding tracks",total=length(unique(dat$trackID)))
