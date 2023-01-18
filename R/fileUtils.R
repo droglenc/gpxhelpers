@@ -49,15 +49,15 @@ combineTracks2GPX <- function(pin,pout,fnm,IDs=NULL) {
     ##   or will append only those IDs in pin not already in fnm
     ## Get all IDs in pin
     IDs_w <- list.files(pattern="gpx",path=pin)
-    ## If fnm existed then reduce to only those IDs modified since fnm was modified
-    if (fnm_existed) {
-      tmp <- file.info(file.path(pin,IDs_w))
-      IDs_w <- IDs_w[which(tmp$mtime>fnm_modtime)]
-      if (length(IDs_w)==0) {
-        finish <- FALSE
-        cli::cli_alert_warning("No tracks have been modified since {fnm} was last modified. There is nothing to add to the existing output file.")
-        cat("\n")
-      }
+  }
+  ## If fnm existed then reduce to only those IDs modified since fnm was modified
+  if (fnm_existed) {
+    tmp <- file.info(file.path(pin,IDs_w))
+    IDs_w <- IDs_w[which(tmp$mtime>fnm_modtime)]
+    if (length(IDs_w)==0) {
+      finish <- FALSE
+      cli::cli_alert_warning("No tracks have been modified since {fnm} was last modified. There is nothing to add to the existing output file.")
+      cat("\n")
     }
   }
   ## Make an IDs list with and wout the .gpx extension
