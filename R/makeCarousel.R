@@ -42,49 +42,49 @@ makeCarousel <- function(id,path,imgs=NULL,caps=NULL,
   width <- match.arg(width)
 
     ## start the carousel container
-  tmp <- paste0("<div id='carousel",id,"Captions' class='carousel slide",ifelse(fade," carousel-fade","")," w-",width,"' data-bs-ride='carousel'>","\n")
+  tmp <- paste0('<div id="carousel',id,'Captions" class="carousel slide',ifelse(fade,' carousel-fade',''),' w-',width,'" data-bs-ride="carousel">','\n')
 
   ## create the indicators/buttons (if asked for)
   if (indicators) {
-    tmp <- paste0(tmp,"<div class='carousel-indicators'>","\n")
+    tmp <- paste0(tmp,'<div class="carousel-indicators">','\n')
     for (i in seq_along(imgs)) {
-      tmp <- paste0(tmp,"<button type='button' data-bs-target='#carousel",id,"Captions' data-bs-slide-to='",i-1,"' class='active' aria-current='true' aria-label='Slide ",i,"'></button>","\n")
+      tmp <- paste0(tmp,'<button type="button" data-bs-target="#carousel',id,'Captions" data-bs-slide-to="',i-1,'" class="active" aria-current="true" aria-label="Slide ',i,'"></button>','\n')
     }
-    tmp <- paste0(tmp,"</div>","\n")
+    tmp <- paste0(tmp,'</div>','\n')
   }
 
   ## add the images for each slide
-  tmp <- paste0(tmp,"<div class='carousel-inner'>","\n")
+  tmp <- paste0(tmp,'<div class="carousel-inner">','\n')
   for (i in seq_along(imgs)) {
-    if (i==1) tmp <- paste0(tmp,"<div class='carousel-item active' data-bs-pause='hover' data-bs-interval='",interval,"'>","\n")
-    else tmp <- paste0(tmp,"<div class='carousel-item' data-bs-pause='hover' data-bs-interval='",interval,"'>","\n")
-    tmp <- paste0(tmp,"<img src='",path,imgs[i],"' class='d-block w-100' alt='",caps[i],"'>","\n")
+    if (i==1) tmp <- paste0(tmp,'<div class="carousel-item active" data-bs-pause="hover" data-bs-interval="',interval,'">','\n')
+    else tmp <- paste0(tmp,'<div class="carousel-item" data-bs-pause="hover" data-bs-interval="',interval,'">','\n')
+    tmp <- paste0(tmp,'<img src="',path,imgs[i],'" class="d-block w-100" alt="',caps[i],'">','\n')
     ## add captions (if asked for)
     if (captions) {
-      tmp <- paste0(tmp,"<div class='carousel-caption d-none d-md-block'>","\n")
-      tmp <- paste0(tmp,"<h5>",caps[i],"</h5>","\n")
-      tmp <- paste0(tmp,"</div>","\n")
+      tmp <- paste0(tmp,'<div class="carousel-caption d-none d-md-block">','\n')
+      tmp <- paste0(tmp,'<h5>',caps[i],'</h5>','\n')
+      tmp <- paste0(tmp,'</div>','\n')
     }
-    tmp <- paste0(tmp,"</div>","\n")
+    tmp <- paste0(tmp,'</div>','\n')
   }
-  tmp <- paste0(tmp,"</div>","\n")
+  tmp <- paste0(tmp,'</div>','\n')
 
   ## add controls to the slide (if asked for)
   if (controls) {
-    tmp <- paste0(tmp,"<button class='carousel-control-prev' type='button' data-bs-target='#carousel",id,"Captions' data-bs-slide='prev'>","\n")
-    tmp <- paste0(tmp,"<span class='carousel-control-prev-icon' aria-hidden='true'></span>","\n")
-    tmp <- paste0(tmp,"<span class='visually-hidden'>Previous</span>","\n")
-    tmp <- paste0(tmp,'</button>',"\n")
-    tmp <- paste0(tmp,"<button class='carousel-control-next' type='button' data-bs-target='#carousel",id,"Captions' data-bs-slide='next'>","\n")
-    tmp <- paste0(tmp,"<span class='carousel-control-next-icon' aria-hidden='true'></span>","\n")
-    tmp <- paste0(tmp,"<span class='visually-hidden'>Next</span>","\n")
-    tmp <- paste0(tmp,'</button>',"\n")
+    tmp <- paste0(tmp,'<button class="carousel-control-prev" type="button" data-bs-target="#carousel',id,'Captions" data-bs-slide="prev">','\n')
+    tmp <- paste0(tmp,'<span class="carousel-control-prev-icon" aria-hidden="true"></span>','\n')
+    tmp <- paste0(tmp,'<span class="visually-hidden">Previous</span>','\n')
+    tmp <- paste0(tmp,'</button>','\n')
+    tmp <- paste0(tmp,'<button class="carousel-control-next" type="button" data-bs-target="#carousel',id,'Captions" data-bs-slide="next">','\n')
+    tmp <- paste0(tmp,'<span class="carousel-control-next-icon" aria-hidden="true"></span>','\n')
+    tmp <- paste0(tmp,'<span class="visually-hidden">Next</span>','\n')
+    tmp <- paste0(tmp,'</button>','\n')
   }
 
   ## finish up
-  tmp <- paste0(tmp,"</div>","\n")
+  tmp <- paste0(tmp,'</div>','\n')
   ## center if asked for
-  if (center) tmp <- paste0("<center>\n",tmp,"</center>\n")
+  if (center) tmp <- paste0('<center>\n',tmp,'</center>\n')
   ## display the object
   cat(tmp)
 }
