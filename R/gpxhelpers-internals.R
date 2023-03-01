@@ -137,7 +137,7 @@ iWalkSumPts <- function(walkdat) {
   ## Find a midpoint for each track
   mpwalk <- walkdat |>
     dplyr::group_by(.data$trknum,.data$trackID) |>
-    dplyr::slice(n=floor(length(.data$Longitude)/2)) |>
+    dplyr::slice(floor(length(.data$Longitude)/2)) |>
     dplyr::rename(midpt_Lat=.data$Latitude,midpt_Lon=.data$Longitude) |>
     dplyr::ungroup() |>
     dplyr::select(.data$trknum,.data$trackID,dplyr::starts_with("midpt"))

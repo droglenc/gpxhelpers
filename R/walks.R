@@ -143,7 +143,7 @@ walkMaker <- function(trkdata,trkinfo,walkIDs,startIDs=walkIDs[1:2],
 #' ## None yet.
 #' 
 #' @export 
-walkSummary <- function(walkdat) {
+walkSummary <- function(walkdat,dropType=FALSE,dropOwner=FALSE) {
   walksum <- iWalkSumPts(walkdat) |>
     ## need this group_by so that iMakeDescription works for each track
     dplyr::group_by(.data$trknum) |>
@@ -156,7 +156,19 @@ walkSummary <- function(walkdat) {
                   .data$Description,.data$Type,.data$Owner,
                   .data$Distance,.data$CumDist,.data$DeltaElev)
   
-  knitr::kable(walksum,digits=c(0,NA,NA,NA,NA,NA,2,2,0)) |>
+  digs <- c(0,NA,NA,NA,NA,NA,2,2,0)
+
+  if (dropType) {
+    walksum <- dplyr::select(walksum,-.data$Type)
+    digs <- digs[-2]
+  }
+  
+  if (dropOwner) {
+    walksum <- dplyr::select(walksum,-.data$Owner)
+    digs <- digs[-2]
+  }
+  
+  knitr::kable(walksum,digits=digs) |>
     kableExtra::kable_classic(html_font="Cambria",full_width=FALSE) |>
     kableExtra::kable_styling(bootstrap_options=c("hover","condensed"))
 }
