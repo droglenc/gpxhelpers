@@ -65,57 +65,62 @@ walkGetPhotos <- function(d,walkIDs,path="Images") {
 #' @export
 walkMaker <- function(trkdata,trkinfo,walkIDs,startIDs=walkIDs[1:2],
                       findOrder=FALSE,basedate="2022-01-01",verbose=FALSE) {
-  ## Arrange walkIDs (from startIDs)
-  if (findOrder) walkIDs <- iOrderWalk(walkIDs,trkinfo,startIDs)
-  if (verbose) cat("Segment order:",paste(walkIDs,collapse=" -> "),"\n\n")
-  
-  ## Initiate walk data frame by connecting first two tracks
-  if (verbose) cat("Connecting:",startIDs[1],"to",startIDs[2],"\n")
-  seg1 <- dplyr::filter(trkdata,.data$trackID==startIDs[1]) |>
-    dplyr::mutate(trknum=1)
-  seg1_begpt <- seg1[1,c("Longitude","Latitude")]
-  seg1_endpt <- seg1[nrow(seg1),c("Longitude","Latitude")]
-  seg2 <- dplyr::filter(trkdata,.data$trackID==startIDs[2]) |>
-    dplyr::mutate(trknum=2)
-  seg2_begpt <- seg2[1,c("Longitude","Latitude")]
-  seg2_endpt <- seg2[nrow(seg2),c("Longitude","Latitude")]
-  dists <- c("beg2beg"=geosphere::distGeo(seg1_begpt,seg2_begpt),
-             "beg2end"=geosphere::distGeo(seg1_begpt,seg2_endpt),
-             "end2beg"=geosphere::distGeo(seg1_endpt,seg2_begpt),
-             "end2end"=geosphere::distGeo(seg1_endpt,seg2_endpt))
-  min_dist_pts <- names(dists)[which.min(dists)]
-  if (min_dist_pts %in% c("beg2end","beg2beg")) {
-    seg1 <- seg1[nrow(seg1):1,]
-    seg1 <- iSwapFromTo(seg1)
-  }
-  if (min_dist_pts %in% c("beg2end","end2end")) {
-    seg2 <- seg2[nrow(seg2):1,]
-    seg2 <- iSwapFromTo(seg2)
-  }
-  walkdat <- rbind(seg1,seg2)
-  
-  ## Loop through other tracks and append
-  if (length(walkIDs)>2) {
-    for (i in 3:length(walkIDs)) {
-      if (verbose) cat("Connecting:",walkIDs[i-1],"to",walkIDs[i],"\n")
-      nextseg <- dplyr::filter(trkdata,.data$trackID==walkIDs[i]) |>
-        dplyr::mutate(trknum=i)
-      prevseg_endpt <- walkdat[nrow(walkdat),c("Longitude","Latitude")]
-      nextseg_begpt <- nextseg[1,c("Longitude","Latitude")]
-      nextseg_endpt <- nextseg[nrow(nextseg),c("Longitude","Latitude")]
-      d_end2beg <- geosphere::distGeo(prevseg_endpt,nextseg_begpt)
-      d_end2end <- geosphere::distGeo(prevseg_endpt,nextseg_endpt)
-      if (d_end2end<d_end2beg) {
-        nextseg <- nextseg[nrow(nextseg):1,]
-        nextseg <- iSwapFromTo(nextseg)
-      }
-      walkdat <- rbind(walkdat,nextseg)
+  if (length(walkIDs)==1) {
+    ## If only one track ID then just return that
+    walkdat <- dplyr::filter(trkdata,.data$trackID==walkIDs[1])
+  } else {
+    ## Arrange walkIDs (from startIDs)
+    if (findOrder) walkIDs <- iOrderWalk(walkIDs,trkinfo,startIDs)
+    if (verbose) cat("Segment order:",paste(walkIDs,collapse=" -> "),"\n\n")
+    
+    ## Initiate walk data frame by connecting first two tracks
+    if (verbose) cat("Connecting:",startIDs[1],"to",startIDs[2],"\n")
+    seg1 <- dplyr::filter(trkdata,.data$trackID==startIDs[1]) |>
+      dplyr::mutate(trknum=1)
+    seg1_begpt <- seg1[1,c("Longitude","Latitude")]
+    seg1_endpt <- seg1[nrow(seg1),c("Longitude","Latitude")]
+    seg2 <- dplyr::filter(trkdata,.data$trackID==startIDs[2]) |>
+      dplyr::mutate(trknum=2)
+    seg2_begpt <- seg2[1,c("Longitude","Latitude")]
+    seg2_endpt <- seg2[nrow(seg2),c("Longitude","Latitude")]
+    dists <- c("beg2beg"=geosphere::distGeo(seg1_begpt,seg2_begpt),
+               "beg2end"=geosphere::distGeo(seg1_begpt,seg2_endpt),
+               "end2beg"=geosphere::distGeo(seg1_endpt,seg2_begpt),
+               "end2end"=geosphere::distGeo(seg1_endpt,seg2_endpt))
+    min_dist_pts <- names(dists)[which.min(dists)]
+    if (min_dist_pts %in% c("beg2end","beg2beg")) {
+      seg1 <- seg1[nrow(seg1):1,]
+      seg1 <- iSwapFromTo(seg1)
     }
+    if (min_dist_pts %in% c("beg2end","end2end")) {
+      seg2 <- seg2[nrow(seg2):1,]
+      seg2 <- iSwapFromTo(seg2)
+    }
+    walkdat <- rbind(seg1,seg2)
+    
+    ## Loop through other tracks and append
+    if (length(walkIDs)>2) {
+      for (i in 3:length(walkIDs)) {
+        if (verbose) cat("Connecting:",walkIDs[i-1],"to",walkIDs[i],"\n")
+        nextseg <- dplyr::filter(trkdata,.data$trackID==walkIDs[i]) |>
+          dplyr::mutate(trknum=i)
+        prevseg_endpt <- walkdat[nrow(walkdat),c("Longitude","Latitude")]
+        nextseg_begpt <- nextseg[1,c("Longitude","Latitude")]
+        nextseg_endpt <- nextseg[nrow(nextseg),c("Longitude","Latitude")]
+        d_end2beg <- geosphere::distGeo(prevseg_endpt,nextseg_begpt)
+        d_end2end <- geosphere::distGeo(prevseg_endpt,nextseg_endpt)
+        if (d_end2end<d_end2beg) {
+          nextseg <- nextseg[nrow(nextseg):1,]
+          nextseg <- iSwapFromTo(nextseg)
+        }
+        walkdat <- rbind(walkdat,nextseg)
+      }
+    }
+    ## Recalculate distance and time
+    walkdat$Distance <- distAlongTrack(walkdat)
+    walkdat$Time <- lubridate::ymd_hms(paste(basedate,"00:00:00 CDT")) +
+      1:nrow(walkdat)    
   }
-  ## Recalculate distance and time
-  walkdat$Distance <- distAlongTrack(walkdat)
-  walkdat$Time <- lubridate::ymd_hms(paste(basedate,"00:00:00 CDT")) +
-    1:nrow(walkdat)
   ## Move "trknum" variable to first column
   walkdat <- dplyr::relocate(walkdat,.data$trknum)
   ## Return the walk data.frame
