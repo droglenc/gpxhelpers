@@ -4,10 +4,14 @@
 \alias{walkSummary}
 \title{Summarize tracks that form a walk.}
 \usage{
-walkSummary(walkdat)
+walkSummary(walkdat, dropType = FALSE, dropOwner = FALSE)
 }
 \arguments{
 \item{walkdat}{A data frame that contains tracks that form a contiguous \dQuote{walk}. Usually made with \code{\link{walkMaker}}.}
+
+\item{dropType}{A logical for whether the \code{Type} variable should be dropped from the summary table.}
+
+\item{dropOwner}{A logical for whether the \code{Owner} variable should be dropped from the summary table.}
 }
 \value{
 Returns a \code{kable} table object.

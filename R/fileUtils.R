@@ -37,7 +37,7 @@ combineTracks2GPX <- function(pin,pout,fnm,IDs=NULL) {
     ## ... get the last modified date
     fnm_modtime <- file.info(fnm)$mtime
     ## Send message
-    cli::cli_alert_info("The output file '{file.path(getwd(),fnm)}' already exists! Track files modified after {as.character(fnm_modtime)} will be appended to it.")
+    cli::cli_alert_info("The output file '{fnm}' already exists! Track files modified after {as.character(fnm_modtime)} will be appended to it.")
     cat("\n")
   }
   
@@ -166,7 +166,7 @@ writeGPXnInfo2CSV <- function(trkinfo,pin,pout,fnm,IDs=NULL) {
     ## ... get the last modified date
     fnm_modtime <- file.info(fnm)$mtime
     ## Send message
-    cli::cli_alert_info("The output file '{file.path(getwd(),fnm)}' already exists! Track files modified after {as.character(fnm_modtime)} will be appended to it.")
+    cli::cli_alert_info("The output file '{fnm}' already exists! Track files modified after {as.character(fnm_modtime)} will be appended to it.")
     cat("\n")
   }
   
@@ -243,7 +243,7 @@ writeGPXnInfo2CSV <- function(trkinfo,pin,pout,fnm,IDs=NULL) {
     utils::write.csv(res,file=fnm,row.names=FALSE)
     ## Send completion message
     tmp <- ifelse(fnm_existed,"appended to","combined into")
-    cli::cli_alert_success("{length(IDs_w)} tracks {tmp} '{file.path(getwd(),fnm)}'")
+    cli::cli_alert_success("{length(IDs_w)} tracks {tmp} '{fnm}'")
     cat("\n")
   }
   ## Return the results object

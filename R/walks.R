@@ -134,6 +134,8 @@ walkMaker <- function(trkdata,trkinfo,walkIDs,startIDs=walkIDs[1:2],
 #' @description Create a table that summarizes tracks in a data frame that form a contiguous \dQuote{walk}.
 #' 
 #' @param walkdat A data frame that contains tracks that form a contiguous \dQuote{walk}. Usually made with \code{\link{walkMaker}}.
+#' @param dropType A logical for whether the \code{Type} variable should be dropped from the summary table.
+#' @param dropOwner A logical for whether the \code{Owner} variable should be dropped from the summary table.
 #' 
 #' @details NONE YET
 #' 
