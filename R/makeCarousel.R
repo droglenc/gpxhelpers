@@ -6,6 +6,7 @@
 #' @param path A relative path to the folder with the images. If \code{imgs} is \code{NULL} then the folder should only contain image files that will form the carousel.
 #' @param imgs A vector of file names with the images to form the carousel. See details.
 #' @param caps A vector of captions for each image in the carousel. If \code{NULL} then captions will be the filename sans extension.
+#' @param rev A logical for whether the given order of \code{imgs} and \code{caps} should be reversed. Most logically used if \code{imgs} and \code{caps} are not specified.
 #' @param width The relative width (as a percentage) of the carousel (can only be 100, 75, or 50).
 #' @param center Logical for whether the carousel should be centered on the page or not.
 #' @param captions Logical for whether captions should be added.
@@ -26,7 +27,7 @@
 #' ## None yet.
 #'
 #' @export
-makeCarousel <- function(id,path,imgs=NULL,caps=NULL,
+makeCarousel <- function(id,path,imgs=NULL,caps=NULL,rev=FALSE,
                          width=c("100","75","50"),center=TRUE,
                          captions=TRUE,controls=TRUE,indicators=FALSE,
                          interval=2500,fade=FALSE,hover=TRUE) {
@@ -36,6 +37,12 @@ makeCarousel <- function(id,path,imgs=NULL,caps=NULL,
   if (is.null(caps)) caps <- tools::file_path_sans_ext(imgs)
   ## Make sure imgs and caps is same length
   if (length(imgs)!=length(caps)) stop("'imgs' and 'caps' not same length!",call.=FALSE)
+  
+  ## Reverse given order of imgs/caps if asked for
+  if (rev) {
+    imgs <- rev(imgs)
+    caps <- rev(caps)
+  }
 
   ## Get the width for the carousel container
   width <- as.character(width)

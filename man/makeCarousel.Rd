@@ -9,6 +9,7 @@ makeCarousel(
   path,
   imgs = NULL,
   caps = NULL,
+  rev = FALSE,
   width = c("100", "75", "50"),
   center = TRUE,
   captions = TRUE,
@@ -27,6 +28,8 @@ makeCarousel(
 \item{imgs}{A vector of file names with the images to form the carousel. See details.}
 
 \item{caps}{A vector of captions for each image in the carousel. If \code{NULL} then captions will be the filename sans extension.}
+
+\item{rev}{A logical for whether the given order of \code{imgs} and \code{caps} should be reversed. Most logically used if \code{imgs} and \code{caps} are not specified.}
 
 \item{width}{The relative width (as a percentage) of the carousel (can only be 100, 75, or 50).}
 
