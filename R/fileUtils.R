@@ -107,6 +107,9 @@ combineTracks2GPX <- function(pin,pout,fnm,IDs=NULL) {
       else {
         ## Otherwise get from <trk> to </trk> and append to res
         trk_start <- which(grepl("<trk>",tmp))
+        ## Sometimes tracks have a "hidden" attribute ... adjust for that
+        if (length(trk_start)==0)
+          trk_start <- which(grepl("<trk hidden=\"hidden\">",tmp))
         trk_end <- which(grepl("</trk>",tmp))
         res <- c(res,tmp[trk_start:trk_end])
       }
