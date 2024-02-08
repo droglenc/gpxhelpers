@@ -216,8 +216,9 @@ writeGPXnInfo2CSV <- function(trkinfo,pin,pout,fnm,IDs=NULL) {
   
   # Cycle through IDs (gpx files) appending them to res
   if (finish) {
-    cli::cli_progress_bar("Adding GPX files",total=length(IDs_w))
+ #   cli::cli_progress_bar("Adding GPX files",total=length(IDs_w))
     for (i in seq_along(IDs_w)) {
+      cli::cli_alert_info("Writing: {IDs_wo[i]}")
       # Get trkinfo for just the current ID
       restrkinfo <- dplyr::filter(trkinfo,.data$trackID==IDs_wo[i])
       ## Read gpx file, get just tracks object, list should have only 1 so get
@@ -239,9 +240,9 @@ writeGPXnInfo2CSV <- function(trkinfo,pin,pout,fnm,IDs=NULL) {
       ## Append to results
       if (fnm_existed | i>1) res <- rbind(res,tmp)
       else (res <- tmp)
-      cli::cli_progress_update()
+#      cli::cli_progress_update()
     }
-    cli::cli_progress_done()
+#    cli::cli_progress_done()
     ## Write out the new file
     utils::write.csv(res,file=fnm,row.names=FALSE)
     ## Send completion message
