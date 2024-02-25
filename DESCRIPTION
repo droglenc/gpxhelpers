@@ -1,7 +1,7 @@
 Package: gpxhelpers
 Title: Functions to help me map my GPX files in R
 Version: 0.0.0.9000
-Date: 2022-10-21
+Date: 2024-2-24
 Description: Functions to help me map my GPX files in R.
     These functions may not work for others.
 Authors@R: person("Derek","Ogle",
@@ -19,6 +19,7 @@ Imports:
     cli,
     dplyr,
     ggplot2,
+    here,
     hms,
     htmltools,
     leaflet,
@@ -30,6 +31,7 @@ Imports:
     knitr
 Suggests:
     rmarkdown,
+    stringr,
     testthat
 Encoding: UTF-8
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.0

@@ -329,3 +329,74 @@ iSanitizeTrack <- function(f,pin,pout,desc,basedate=NULL) {
   writeLines(h,file.path(pout,f))
 }
 
+
+
+#' @title Rename tracks.
+#' 
+#' @description Rename gpx filenames but also, importantly, adjusting the track name in the \code{<name>} tag.
+
+#' @param fold Name for \dQuote{old} GPX file.
+#' @param fnew Name for \dQuote{new} GPX file.
+#' @param pth Path after the working directory that contains the \dQuote{old} GPX files and will receive the \dQuote{new} GPX files.
+#' @param deleteOld A logical that indicates whether \code{fold} should be deleted from \code{pth} after \code{fnew} is created. Defauts to \code{FALSE} (i.e., not deleting \code{fold}).
+#' 
+#' @details NONE YET
+#' 
+#' @return None, used for side effect of writing new GPX files to the \code{pth} directory (and possibly deleting now old GPX files from the same directory).
+#' 
+#' @author Derek H. Ogle
+#' @keywords manip
+#' 
+#' @examples
+#' \dontrun{
+#' ## Set working directory to where the files are
+#' ## Single file
+#' renameGPXfile("NCTBF01","NCTBF001")
+#' 
+#' ## Example of multiple files with a consistent file change pattern
+#' olds <- c("NCTBF01","NCTBF07a")
+#' news <- stringr::str_replace(olds,"NCTBF","NCTBF0")
+#' for (i in seq_along(olds)) renameGPXfile(olds[i],news[i],deleteOld=TRUE)
+#' }
+#' 
+#' @export
+renameGPXfile <- function(fold,fnew,pth,deleteOld=FALSE) {
+  # Determine if fold has an extension; if so, remove and save name in nold;
+  #  if not then save fold into nold and add ".gpx" to fold
+  if(tools::file_ext(fold)=="") {
+    nold <- fold
+    fold <- paste0(fold,".gpx")
+  } else nold <- tools::file_path_sans_ext(fold)
+  # same for fnew/nnew
+  if(tools::file_ext(fnew)=="") {
+    nnew <- fnew
+    fnew <- paste0(fnew,".gpx")
+  } else nnew <- tools::file_path_sans_ext(fnew)
+  # Make full names for files
+  basedir <- here::here()
+  if (!missing(pth)) basedir <- file.path(basedir,pth)
+  fold <- file.path(basedir,fold)
+  fnew <- file.path(basedir,fnew)
+  # See if the old file exists or not in basedir ... if so then read/process file
+  #   ... if not then send warning and do nothing
+  fnm_existed <- fold %in% list.files(pattern="gpx",path=basedir,full.names=TRUE)
+  if (!fnm_existed) {
+    cli::cli_alert_warning("{fold} not found; thus, no renaming!")
+  } else {
+    res <- readLines(fold)
+    # find line with nold in it (this will be in <name></name>)
+    tmp <- which(grepl(nold,res))
+    # modify that line by replacing nold with new
+    res[tmp] <- stringr::str_replace(res[tmp],nold,nnew)
+    # Write out the new file
+    writeLines(res,fnew)
+    # Possibly delete old file
+    if (!deleteOld) {
+      cli::cli_alert_success("'{fnew}' successfully created from '{fold}'")
+    } else {
+      cli::cli_alert_success("'{fold}' successfully replaced by '{fold}'")
+      file.remove(fold)
+    }
+  }
+} 
+
