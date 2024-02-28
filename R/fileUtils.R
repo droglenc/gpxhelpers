@@ -337,8 +337,7 @@ iSanitizeTrack <- function(f,pin,pout,desc,basedate=NULL) {
 
 #' @param fold Name for \dQuote{old} GPX file.
 #' @param fnew Name for \dQuote{new} GPX file.
-#' @param pth Path after the working directory that contains the \dQuote{old} GPX files and will receive the \dQuote{new} GPX files.
-#' @param deleteOld A logical that indicates whether \code{fold} should be deleted from \code{pth} after \code{fnew} is created. Defauts to \code{FALSE} (i.e., not deleting \code{fold}).
+#' @param pnew Path after the working directory to contain the \dQuote{new} GPX files.
 #' 
 #' @details NONE YET
 #' 
@@ -356,32 +355,56 @@ iSanitizeTrack <- function(f,pin,pout,desc,basedate=NULL) {
 #' ## Example of multiple files with a consistent file change pattern
 #' olds <- c("NCTBF01","NCTBF07a")
 #' news <- stringr::str_replace(olds,"NCTBF","NCTBF0")
-#' for (i in seq_along(olds)) renameGPXfile(olds[i],news[i],deleteOld=TRUE)
+#' cbind(olds,news)
+#' renameGPXfile(olds,news)
+#' 
+#' ## Example of multiple files to get new numbers padded with zeroes
+#' olds <- c("NCTBF01","NCTBF07a")
+#' news <- paste0("NCTBF",stringr::str_pad(seq_along(olds),width=3,pad=0))
+#' cbind(olds,news)
+#' renameGPXfile(olds,news)
 #' }
 #' 
 #' @export
-renameGPXfile <- function(fold,fnew,pth,deleteOld=FALSE) {
-  # Determine if fold has an extension; if so, remove and save name in nold;
-  #  if not then save fold into nold and add ".gpx" to fold
+
+renameGPXfile <- function(fold,fnew,pnew="renamed") {
+  ## Determine if fold and fnew are same length
+  if (length(fnew)!=length(fold))
+    cli::cli_abort("'fold' and 'fnew' are different lengths.")
+  ## Determine if any fold in current working directory
+  pold <-getwd()
+  tmp <- tools::file_path_sans_ext(list.files(pattern="gpx",path=pold))
+  if (!any(tools::file_path_sans_ext(fold) %in% tmp))
+    cli::cli_abort("No files in 'fold' are in the current working directory.")
+  ## Create new folder for new files
+  pnew <- file.path(pold,pnew)
+  if (!file.exists(pnew)) dir.create(pnew)
+  cli::cli_alert_info("Renamed files will be in {pnew}.")
+  ## Cycle through files to change
+  for (i in seq_along(fold))
+    iRenameGPXfile(fold[i],fnew[i],pold,pnew)
+}
+
+iRenameGPXfile <- function(fold,fnew,pold,pnew) {
+  ## Determine if fold has an extension; if so, remove and save name in nold;
+  ##  if not then save fold into nold and add ".gpx" to fold
   if(tools::file_ext(fold)=="") {
     nold <- fold
     fold <- paste0(fold,".gpx")
   } else nold <- tools::file_path_sans_ext(fold)
-  # same for fnew/nnew
+  ## same for fnew/nnew
   if(tools::file_ext(fnew)=="") {
     nnew <- fnew
     fnew <- paste0(fnew,".gpx")
   } else nnew <- tools::file_path_sans_ext(fnew)
-  # Make full names for files
-  basedir <- here::here()
-  if (!missing(pth)) basedir <- file.path(basedir,pth)
-  fold <- file.path(basedir,fold)
-  fnew <- file.path(basedir,fnew)
-  # See if the old file exists or not in basedir ... if so then read/process file
-  #   ... if not then send warning and do nothing
-  fnm_existed <- fold %in% list.files(pattern="gpx",path=basedir,full.names=TRUE)
+  ## Make full names for files
+  fold <- file.path(pold,fold)
+  fnew <- file.path(pnew,fnew)
+  ## See if the old file exists or not in pold ... if so then read/process file
+  ##   ... if not then send warning and do nothing
+  fnm_existed <- fold %in% list.files(pattern="gpx",path=pold,full.names=TRUE)
   if (!fnm_existed) {
-    cli::cli_alert_warning("{fold} not found; thus, no renaming!")
+    cli::cli_alert_warning("{fold} not found in {pold}; thus, no renaming done!")
   } else {
     res <- readLines(fold)
     # find line with nold in it (this will be in <name></name>)
@@ -390,13 +413,6 @@ renameGPXfile <- function(fold,fnew,pth,deleteOld=FALSE) {
     res[tmp] <- stringr::str_replace(res[tmp],nold,nnew)
     # Write out the new file
     writeLines(res,fnew)
-    # Possibly delete old file
-    if (!deleteOld) {
-      cli::cli_alert_success("'{fnew}' successfully created from '{fold}'")
-    } else {
-      cli::cli_alert_success("'{fold}' successfully replaced by '{fold}'")
-      file.remove(fold)
-    }
+    cli::cli_alert_success("'{nold}.gpx' --> '{nnew}.gpx'")
   }
 } 
-

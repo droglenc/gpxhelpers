@@ -4,16 +4,14 @@
 \alias{renameGPXfile}
 \title{Rename tracks.}
 \usage{
-renameGPXfile(fold, fnew, pth, deleteOld = FALSE)
+renameGPXfile(fold, fnew, pnew = "renamed")
 }
 \arguments{
 \item{fold}{Name for \dQuote{old} GPX file.}
 
 \item{fnew}{Name for \dQuote{new} GPX file.}
 
-\item{pth}{Path after the working directory that contains the \dQuote{old} GPX files and will receive the \dQuote{new} GPX files.}
-
-\item{deleteOld}{A logical that indicates whether \code{fold} should be deleted from \code{pth} after \code{fnew} is created. Defauts to \code{FALSE} (i.e., not deleting \code{fold}).}
+\item{pnew}{Path after the working directory to contain the \dQuote{new} GPX files.}
 }
 \value{
 None, used for side effect of writing new GPX files to the \code{pth} directory (and possibly deleting now old GPX files from the same directory).
@@ -33,7 +31,14 @@ renameGPXfile("NCTBF01","NCTBF001")
 ## Example of multiple files with a consistent file change pattern
 olds <- c("NCTBF01","NCTBF07a")
 news <- stringr::str_replace(olds,"NCTBF","NCTBF0")
-for (i in seq_along(olds)) renameGPXfile(olds[i],news[i],deleteOld=TRUE)
+cbind(olds,news)
+renameGPXfile(olds,news)
+
+## Example of multiple files to get new numbers padded with zeroes
+olds <- c("NCTBF01","NCTBF07a")
+news <- paste0("NCTBF",stringr::str_pad(seq_along(olds),width=3,pad=0))
+cbind(olds,news)
+renameGPXfile(olds,news)
 }
 
 }
