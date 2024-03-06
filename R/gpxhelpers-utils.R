@@ -10,42 +10,6 @@
 #' @importFrom leaflet leaflet addTiles addProviderTiles fitBounds addPolylines addLabelOnlyMarkers addRectangles labelOptions highlightOptions addLayersControl layersControlOptions addMeasure
 
 
-
-#' @title Compare file names in a directory to names in the information file.
-#' 
-#' @description Compare file names in a directory to names in the information file to see if any tracks are missing in either place.
-#' 
-#' @param pin Path to directory with track files.
-#' @param trkinfo Database with track information.
-#' 
-#' @details NONE YET
-#' 
-#' @return None, but informative messages will be written as side effects
-#' 
-#' @author Derek H. Ogle
-#' @keywords manip
-#' 
-#' @examples
-#' ## None yet.
-#' 
-#' @export
-compareFiles2Info <- function(pin,trkinfo) {
-  trksInWD <- tools::file_path_sans_ext(list.files(pattern="gpx",path=pin))
-  trksInInfo <- trkinfo$trackID
-  tmp <- !trksInWD %in% trksInInfo
-  if (any(tmp))
-    cli::cli_alert_danger("Tracks in '{pin}' not in info file: {paste(trksInWD[tmp],collapse=' ')}")
-  else
-    cli::cli_alert_success("All tracks in '{pin}' are in the info file!")
-  cat("\n")
-  tmp <- !trksInInfo %in% trksInWD
-  if (any(tmp))
-    cli::cli_alert_danger("Tracks in the info file not in '{pin}': {paste(trksInInfo[tmp],collapse=' ')}")
-  else
-    cli::cli_alert_success("All tracks in info file are in '{pin}'")
-}
-
-
 #' @title Calculate distance along the track.
 #' 
 #' @description Calculates the cumulative distance along the track.

@@ -17,6 +17,7 @@ Depends:
 Imports:
     utils,
     cli,
+    data.table,
     dplyr,
     ggplot2,
     hms,

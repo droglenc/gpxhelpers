@@ -4,7 +4,7 @@
 \alias{sanitizeTracks}
 \title{Sanitize tracks.}
 \usage{
-sanitizeTracks(trkinfo, pin, pout, basedate = NULL)
+sanitizeTracks(trkinfo, pin, pout, basedate = NULL, msgcutoff = 100)
 }
 \arguments{
 \item{trkinfo}{A data frame that contains information about each track.}
@@ -14,6 +14,8 @@ sanitizeTracks(trkinfo, pin, pout, basedate = NULL)
 \item{pout}{Path after the working directory to put the sanitized GPX files.}
 
 \item{basedate}{A string with a date that will serve as the base date for the dummy times in the sanitized GPX file. Defaults to "2022-01-01".}
+
+\item{msgcutoff}{A numeric that indicates the maximum number of tracks to be sanitized before an overall progress bar will be given (rather than individual notices).}
 }
 \value{
 None, used for side effect of writing sanitized GPX tracks to the \code{pout} directory.
