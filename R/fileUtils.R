@@ -130,6 +130,14 @@ sanitizeTracks <- function(trkinfo,pin,pout,basedate=NULL,msgcutoff=100) {
 iSanitizeTrack <- function(f,pin,pout,desc,basedate=NULL) {
   ## Read GPX file
   h <- readLines(file.path(pin,f))
+  ## Sometimes tracks have a "hidden" attribute that is unneeded and ultimately
+  ##   causes problems. Determine if this is the case here and replace it
+  ##   with a regular <trk> tag
+  tmp <- grep("<trk hidden=\"hidden\">",h)
+  if (length(tmp)>0) {
+    h[tmp] <- "<trk>"
+    cli::cli_alert_danger("'{f} has a 'hidden' attribute in '<trk>' tag.")
+  }
   ## Remove the type and extensions
   tmp <- c(which(grepl("<type>",h)),which(grepl("<extensions>",h)))
   h <- h[-tmp]
@@ -243,11 +251,8 @@ iAddTrack2MasterGPX <- function(res,pin,ID) {
   if (is.null(res)) res <- tmp[-length(tmp)]
   else {
     ## Otherwise get from <trk> to </trk> and append to res
-    trk_start <- which(grepl("<trk>",tmp))
-    ## Sometimes tracks have a "hidden" attribute ... adjust for that
-    if (length(trk_start)==0)
-      trk_start <- which(grepl("<trk hidden=\"hidden\">",tmp))
-    trk_end <- which(grepl("</trk>",tmp))
+    trk_start <- grep("<trk>",tmp)
+    trk_end <- grep("</trk>",tmp)
     res <- c(res,tmp[trk_start:trk_end])
   }
   res
@@ -260,28 +265,27 @@ iRemoveTracksFromMasterGPX <- function(res,IDs2Remove) {
   tmp <- grep(tmp,res)
   ## if any IDs existed in the output file then they must be removed
   if (length(tmp)!=0) {
-    ## Send message (first find track names that will be removed)
-    tmp2 <- res[tmp]                      # just lines with <name></name>
-    tmp2 <- substr(tmp2,9,100)            # remove <name> at beginning
-    tmp2 <- substr(tmp2,1,nchar(tmp2)-7)  # remove </name> at end
-    cli::cli_alert_info("Tracks removed from existing master GPX file: {paste(tmp2,collapse=', ')}")
     ## grep above returned position of <name> tag, <trk> tag is right above it
-    ##   this is now the position of <trk> for the IDs to remove
+    ##   thus, this is now the position of the <trk> tag for the IDs to remove
     tmp <- tmp-1
-    ## get position of all <trk> in the output file
+    ## positions of all <trk> and </trk> tags in output file
     trk_starts <- grep("<trk>",res)
-    ## find which trk_starts correspond to IDs to remove ...
-    trk_starts_remove <- which(trk_starts %in% tmp)
-    ## ... convert to actual positions in res
-    ##       the +1 will be used to find the </trk> to stop for the last IDs
-    trk_starts_remove <- trk_starts[unique(c(trk_starts_remove,trk_starts_remove+1))]
-    ## Adjust for if the last track is to be removed
-    if (trk_starts[length(trk_starts)] %in% tmp) trk_starts_remove <- c(trk_starts_remove,length(res)+1)
-    ## Adjust if only one track to remove
-    trk_starts_remove <- trk_starts_remove[!is.na(trk_starts_remove)]
-    ## remove the <trk> to </trk> for each IDs to remove
-    for (i in 1:(length(trk_starts_remove)-1))
-      res <- res[-(trk_starts_remove[i]:(trk_starts_remove[i+1]-1))]
+    trk_ends <- grep("</trk>",res)
+    ## check for same length ... throw error if they are not
+    if (length(trk_starts)!=length(trk_ends)) 
+      cli::cli_abort(c("Unmatched <trk> and </trk> tags in existig master GPX file",
+                       "i"="Check for special attributes (e.g., 'hidden') in <trk>"))
+    ## which trk_starts correspond to IDs to remove ...
+    trk_pos <- which(trk_starts %in% tmp)
+    ## make vector of all rows in res to remove (i.e., between <trk> and </trk>
+    ##   for all IDs in IDs2Remove)
+    rows2remove <- NULL
+    for (i in seq_along(trk_pos))
+      rows2remove <- c(rows2remove,trk_starts[trk_pos[i]]:trk_ends[trk_pos[i]])
+    ## Actually remove the <trk> to </trk> for each IDs to remove
+    res <- res[-rows2remove]
+    ## Send message
+    cli::cli_alert_info("Tracks removed from existing master GPX file: {paste(IDs2Remove,collapse=', ')}")
   }
   res
 }
