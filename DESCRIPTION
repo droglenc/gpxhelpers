@@ -1,7 +1,7 @@
 Package: gpxhelpers
 Title: Functions to help me map my GPX files in R
 Version: 0.0.0.9000
-Date: 2024-2-24
+Date: 2024-3-6
 Description: Functions to help me map my GPX files in R.
     These functions may not work for others.
 Authors@R: person("Derek","Ogle",

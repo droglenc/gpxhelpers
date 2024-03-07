@@ -231,6 +231,43 @@ walkElevation <- function(walkdat,title=NULL,elev_bufr=0.01,maval=10) {
 }
 
 
+#' @title Combine tracks for a walk into a single GPX file.
+#' 
+#' @description Combine given GPX track files into a single GPX file.
+#' 
+#' @param pin Path after the working directory that contains the original GPX files.
+#' @param pout Path after the working directory to put the single resultant GPX file.
+#' @param fnm A filename sans extension for the resultant file (a ".gpx" will be added as appropriate).
+#' @param IDs2Add A character vector of track IDs for a walk that should be combined into a single GPX file.
+#' 
+#' @details NONE YET
+#' 
+#' @return None, used for side effect of writing a file to the \code{pout} directory.
+#' 
+#' @author Derek H. Ogle
+#' @keywords manip
+#' 
+#' @examples
+#' ## None yet.
+#' 
+#' @export
+makeWalkGPX <- function(pin,pout,fnm,IDs2Add) {
+  ## Determine if fnm has an extension, if not then add ".gpx"
+  if(tools::file_ext(fnm)=="") fnm <- paste0(fnm,".gpx")
+  ## Make the full name of output file
+  fnm <- file.path(pout,fnm)
+  ## Cycle through GPX files adding each one to res (which is initiated w NULL)
+  res <- NULL
+  for (i in seq_along(IDs2Add)) res <- iAddTrack2GPX(res,pin,IDs2Add[i])
+  ## Close out the <gpx> tag as the last line
+  res <- c(res,"</gpx>")
+  ## Write out the new file
+  writeLines(res,fnm)
+  ## return nothing
+  invisible()
+}
+
+
 #' @title Write walk report HTML files.
 #' 
 #' @description Write \dQuote{walk} report HTML files.
