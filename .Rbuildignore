@@ -12,3 +12,5 @@ NEWS.md
 
 ^tests/manual_tests/
 ^inst/templates/
+^\.positai$
+^\.claude$
